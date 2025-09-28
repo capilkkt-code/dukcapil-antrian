@@ -45,13 +45,14 @@
         }
         
         .gradient-bg {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
         }
         
         .glass-effect {
-            backdrop-filter: blur(10px);
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(20px);
+            background: rgba(255, 255, 255, 0.95);
+            border: 1px solid rgba(226, 232, 240, 0.5);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
         }
         
         .checkbox-custom {
@@ -161,22 +162,22 @@
 </head>
 <body class="min-h-screen gradient-bg font-sans">
     <!-- Header -->
-    <header class="glass-effect text-white py-8 mb-12">
+    <header class="glass-effect text-slate-700 py-12 mb-8">
         <div class="container mx-auto px-4">
             <div class="text-center">
-                <div class="flex items-center justify-center space-x-4 mb-4">
-                    <div class="w-16 h-16 bg-white bg-opacity-20 rounded-full flex items-center justify-center shadow-lg floating-animation pulse-glow">
-                        <i class="fas fa-building text-3xl"></i>
+                <div class="flex flex-col md:flex-row items-center justify-center space-y-4 md:space-y-0 md:space-x-6 mb-6">
+                    <div class="w-20 h-20 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl flex items-center justify-center shadow-xl floating-animation">
+                        <i class="fas fa-building text-3xl text-white"></i>
                     </div>
-                    <div class="text-left">
-                        <h1 class="text-4xl font-bold animate-slideIn">Layanan Antrian Online</h1>
-                        <p class="text-lg opacity-90 animate-slideIn" style="animation-delay: 0.2s;">Dinas Kependudukan dan Pencatatan Sipil</p>
-                        <p class="text-sm opacity-75 animate-slideIn" style="animation-delay: 0.4s;">Kabupaten Kepulauan Tanimbar</p>
+                    <div class="text-center md:text-left">
+                        <h1 class="text-3xl md:text-4xl font-bold text-slate-800 animate-slideIn">Layanan Antrian Online</h1>
+                        <p class="text-lg text-slate-600 animate-slideIn" style="animation-delay: 0.2s;">Dinas Kependudukan dan Pencatatan Sipil</p>
+                        <p class="text-sm text-slate-500 animate-slideIn" style="animation-delay: 0.4s;">Kabupaten Kepulauan Tanimbar</p>
                     </div>
                 </div>
-                <div class="mt-6 p-4 bg-white bg-opacity-10 rounded-2xl backdrop-blur-sm border border-white border-opacity-20 max-w-2xl mx-auto">
-                    <p class="text-sm opacity-90">
-                        <i class="fas fa-clock mr-2"></i>
+                <div class="mt-6 p-4 bg-blue-50 rounded-2xl border border-blue-100 max-w-2xl mx-auto">
+                    <p class="text-sm text-slate-600 flex items-center justify-center">
+                        <i class="fas fa-clock mr-2 text-blue-500"></i>
                         Jam Pelayanan: Senin - Jumat, 08:00 - 16:00 WITA
                     </p>
                 </div>
@@ -188,61 +189,64 @@
         <div class="flex justify-center">
             <!-- Form Section -->
             <div class="w-full animate-fadeInUp">
-                <div class="bg-white rounded-3xl shadow-2xl p-10 border border-gray-100">
-                    <div class="text-center mb-10">
-                        <div class="w-20 h-20 bg-gradient-to-br from-blue-500 via-purple-600 to-indigo-700 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg floating-animation pulse-glow">
-                            <i class="fas fa-clipboard-list text-3xl text-white"></i>
+                <div class="bg-white rounded-2xl shadow-lg p-6 md:p-8 border border-slate-200">
+                    <div class="text-center mb-8">
+                        <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center mx-auto mb-4 shadow-lg">
+                            <i class="fas fa-clipboard-list text-2xl text-white"></i>
                         </div>
-                        <h2 class="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-3">Formulir Antrian Online</h2>
-                        <p class="text-gray-600 text-lg">Silakan lengkapi data untuk mendaftar antrian layanan kependudukan</p>
-                        <div class="mt-4 p-4 bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl border border-blue-100">
-                            <p class="text-sm text-gray-700">
+                        <h2 class="text-2xl md:text-3xl font-bold text-slate-800 mb-2">Formulir Antrian Online</h2>
+                        <p class="text-slate-600">Silakan lengkapi data untuk mendaftar antrian layanan kependudukan</p>
+                        <div class="mt-4 p-3 bg-blue-50 rounded-xl border border-blue-100">
+                            <p class="text-sm text-slate-600 flex items-center justify-center">
                                 <i class="fas fa-info-circle text-blue-500 mr-2"></i>
                                 Nomor antrian akan direset setiap hari
                             </p>
                         </div>
                     </div>
 
-                    <form id="queueForm" class="space-y-8">
+                    <form id="queueForm" class="space-y-6">
                         <!-- Grid untuk input utama -->
-                        <div class="grid md:grid-cols-2 gap-6">
+                        <div class="grid md:grid-cols-2 gap-4">
                             <!-- Tanggal -->
-                            <div class="input-group relative">
-                                <input type="date" id="tanggal" name="tanggal" 
-                                       class="w-full px-5 py-4 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-4 focus:ring-blue-100 focus:outline-none transition-all duration-300 placeholder-transparent bg-gray-50 focus:bg-white shadow-sm"
-                                       placeholder=" " required>
-                                <label for="tanggal" class="floating-label absolute left-5 top-4 text-gray-500 pointer-events-none font-medium">
+                            <div class="space-y-2">
+                                <label for="tanggal" class="block text-sm font-medium text-slate-700">
                                     <i class="fas fa-calendar-alt mr-2 text-blue-500"></i>Tanggal Kunjungan
                                 </label>
+                                <input type="date" id="tanggal" name="tanggal" 
+                                       class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-100 focus:outline-none transition-all duration-200 bg-white"
+                                       required>
                             </div>
 
                             <!-- NIK -->
-                            <div class="input-group relative">
-                                <input type="text" id="nik" name="nik" 
-                                       class="w-full px-5 py-4 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-4 focus:ring-blue-100 focus:outline-none transition-all duration-300 placeholder-transparent bg-gray-50 focus:bg-white shadow-sm"
-                                       placeholder=" " pattern="[0-9]{16}" maxlength="16" required>
-                                <label for="nik" class="floating-label absolute left-5 top-4 text-gray-500 pointer-events-none font-medium">
+                            <div class="space-y-2">
+                                <label for="nik" class="block text-sm font-medium text-slate-700">
                                     <i class="fas fa-id-card mr-2 text-blue-500"></i>NIK (16 digit)
                                 </label>
+                                <input type="text" id="nik" name="nik" 
+                                       class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-100 focus:outline-none transition-all duration-200 bg-white"
+                                       pattern="[0-9]{16}" maxlength="16" required>
                             </div>
                         </div>
 
                         <!-- Nama Lengkap -->
-                        <div class="input-group relative">
-                            <input type="text" id="nama" name="nama" 
-                                   class="w-full px-5 py-4 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-4 focus:ring-blue-100 focus:outline-none transition-all duration-300 placeholder-transparent bg-gray-50 focus:bg-white shadow-sm"
-                                   placeholder=" " required>
-                            <label for="nama" class="floating-label absolute left-5 top-4 text-gray-500 pointer-events-none font-medium">
+                        <div class="space-y-2">
+                            <label for="nama" class="block text-sm font-medium text-slate-700">
                                 <i class="fas fa-user mr-2 text-blue-500"></i>Nama Lengkap
                             </label>
+                            <input type="text" id="nama" name="nama" 
+                                   class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-100 focus:outline-none transition-all duration-200 bg-white"
+                                   required>
                         </div>
 
                         <!-- Grid untuk lokasi -->
-                        <div class="grid md:grid-cols-2 gap-6">
+                        <div class="grid md:grid-cols-2 gap-4">
                             <!-- Kecamatan -->
-                            <div class="relative">
+                            <div class="space-y-2">
+                                <label for="kecamatan" class="block text-sm font-medium text-slate-700">
+                                    <i class="fas fa-map-marker-alt mr-2 text-blue-500"></i>Kecamatan
+                                </label>
                                 <select id="kecamatan" name="kecamatan" 
-                                        class="w-full px-5 py-4 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-4 focus:ring-blue-100 focus:outline-none transition-all duration-300 appearance-none bg-gray-50 focus:bg-white shadow-sm font-medium"
+                                        class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-100 focus:outline-none transition-all duration-200 bg-white"
                                         required>
                                     <option value="">Pilih Kecamatan</option>
                                     <option value="Tanimbar Selatan">Tanimbar Selatan</option>
@@ -256,108 +260,104 @@
                                     <option value="Nirunmas">Nirunmas</option>
                                     <option value="Molumaru">Molumaru</option>
                                 </select>
-                                <i class="fas fa-map-marker-alt absolute left-5 top-4 text-blue-500"></i>
-                                <i class="fas fa-chevron-down absolute right-5 top-4 text-gray-400"></i>
                             </div>
 
                             <!-- Desa -->
-                            <div class="relative">
+                            <div class="space-y-2">
+                                <label for="desa" class="block text-sm font-medium text-slate-700">
+                                    <i class="fas fa-home mr-2 text-blue-500"></i>Desa
+                                </label>
                                 <select id="desa" name="desa" 
-                                        class="w-full px-5 py-4 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-4 focus:ring-blue-100 focus:outline-none transition-all duration-300 appearance-none bg-gray-50 focus:bg-white shadow-sm font-medium disabled:opacity-60"
+                                        class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-100 focus:outline-none transition-all duration-200 bg-white disabled:bg-slate-50 disabled:text-slate-500"
                                         required disabled>
                                     <option value="">Pilih Desa</option>
                                 </select>
-                                <i class="fas fa-home absolute left-5 top-4 text-blue-500"></i>
-                                <i class="fas fa-chevron-down absolute right-5 top-4 text-gray-400"></i>
                             </div>
                         </div>
 
                         <!-- Jenis Pengurusan -->
-                        <div class="space-y-6">
-                            <div class="text-center">
-                                <h3 class="text-2xl font-bold text-gray-800 flex items-center justify-center mb-2">
-                                    <i class="fas fa-file-alt mr-3 text-blue-500"></i>
+                        <div class="space-y-4">
+                            <div>
+                                <h3 class="text-lg font-semibold text-slate-800 mb-2 flex items-center">
+                                    <i class="fas fa-file-alt mr-2 text-blue-500"></i>
                                     Jenis Pengurusan
                                 </h3>
-                                <p class="text-gray-600">Pilih layanan yang ingin Anda urus (dapat memilih lebih dari satu)</p>
+                                <p class="text-sm text-slate-600 mb-4">Pilih layanan yang ingin Anda urus (dapat memilih lebih dari satu)</p>
                             </div>
-                            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-                                <label class="flex items-center space-x-4 p-4 rounded-xl border-2 border-gray-200 hover:border-blue-300 hover:bg-blue-50 cursor-pointer transition-all duration-300 group">
-                                    <input type="checkbox" name="jenis[]" value="KK" class="checkbox-custom">
+                            <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                                <label class="flex items-center space-x-3 p-3 rounded-lg border border-slate-200 hover:border-blue-300 hover:bg-blue-50 cursor-pointer transition-all duration-200 group">
+                                    <input type="checkbox" name="jenis[]" value="KK" class="w-4 h-4 text-blue-600 border-slate-300 rounded focus:ring-blue-500">
                                     <div class="flex-1">
-                                        <span class="text-gray-800 font-medium group-hover:text-blue-700">Kartu Keluarga</span>
-                                        <div class="text-sm text-gray-500">(KK)</div>
+                                        <span class="text-slate-800 font-medium text-sm group-hover:text-blue-700">Kartu Keluarga</span>
+                                        <div class="text-xs text-slate-500">(KK)</div>
                                     </div>
                                 </label>
-                                <label class="flex items-center space-x-4 p-4 rounded-xl border-2 border-gray-200 hover:border-blue-300 hover:bg-blue-50 cursor-pointer transition-all duration-300 group">
-                                    <input type="checkbox" name="jenis[]" value="KTP El" class="checkbox-custom">
+                                <label class="flex items-center space-x-3 p-3 rounded-lg border border-slate-200 hover:border-blue-300 hover:bg-blue-50 cursor-pointer transition-all duration-200 group">
+                                    <input type="checkbox" name="jenis[]" value="KTP El" class="w-4 h-4 text-blue-600 border-slate-300 rounded focus:ring-blue-500">
                                     <div class="flex-1">
-                                        <span class="text-gray-800 font-medium group-hover:text-blue-700">KTP Elektronik</span>
-                                        <div class="text-sm text-gray-500">(e-KTP)</div>
+                                        <span class="text-slate-800 font-medium text-sm group-hover:text-blue-700">KTP Elektronik</span>
+                                        <div class="text-xs text-slate-500">(e-KTP)</div>
                                     </div>
                                 </label>
-                                <label class="flex items-center space-x-4 p-4 rounded-xl border-2 border-gray-200 hover:border-blue-300 hover:bg-blue-50 cursor-pointer transition-all duration-300 group">
-                                    <input type="checkbox" name="jenis[]" value="KIA" class="checkbox-custom">
+                                <label class="flex items-center space-x-3 p-3 rounded-lg border border-slate-200 hover:border-blue-300 hover:bg-blue-50 cursor-pointer transition-all duration-200 group">
+                                    <input type="checkbox" name="jenis[]" value="KIA" class="w-4 h-4 text-blue-600 border-slate-300 rounded focus:ring-blue-500">
                                     <div class="flex-1">
-                                        <span class="text-gray-800 font-medium group-hover:text-blue-700">Kartu Identitas Anak</span>
-                                        <div class="text-sm text-gray-500">(KIA)</div>
+                                        <span class="text-slate-800 font-medium text-sm group-hover:text-blue-700">Kartu Identitas Anak</span>
+                                        <div class="text-xs text-slate-500">(KIA)</div>
                                     </div>
                                 </label>
-                                <label class="flex items-center space-x-4 p-4 rounded-xl border-2 border-gray-200 hover:border-blue-300 hover:bg-blue-50 cursor-pointer transition-all duration-300 group">
-                                    <input type="checkbox" name="jenis[]" value="SKPWNI" class="checkbox-custom">
+                                <label class="flex items-center space-x-3 p-3 rounded-lg border border-slate-200 hover:border-blue-300 hover:bg-blue-50 cursor-pointer transition-all duration-200 group">
+                                    <input type="checkbox" name="jenis[]" value="SKPWNI" class="w-4 h-4 text-blue-600 border-slate-300 rounded focus:ring-blue-500">
                                     <div class="flex-1">
-                                        <span class="text-gray-800 font-medium group-hover:text-blue-700">SKPWNI</span>
-                                        <div class="text-sm text-gray-500">Surat Keterangan</div>
+                                        <span class="text-slate-800 font-medium text-sm group-hover:text-blue-700">SKPWNI</span>
+                                        <div class="text-xs text-slate-500">Surat Keterangan</div>
                                     </div>
                                 </label>
-                                <label class="flex items-center space-x-4 p-4 rounded-xl border-2 border-gray-200 hover:border-blue-300 hover:bg-blue-50 cursor-pointer transition-all duration-300 group">
-                                    <input type="checkbox" name="jenis[]" value="SKDWNI" class="checkbox-custom">
+                                <label class="flex items-center space-x-3 p-3 rounded-lg border border-slate-200 hover:border-blue-300 hover:bg-blue-50 cursor-pointer transition-all duration-200 group">
+                                    <input type="checkbox" name="jenis[]" value="SKDWNI" class="w-4 h-4 text-blue-600 border-slate-300 rounded focus:ring-blue-500">
                                     <div class="flex-1">
-                                        <span class="text-gray-800 font-medium group-hover:text-blue-700">SKDWNI</span>
-                                        <div class="text-sm text-gray-500">Surat Keterangan</div>
+                                        <span class="text-slate-800 font-medium text-sm group-hover:text-blue-700">SKDWNI</span>
+                                        <div class="text-xs text-slate-500">Surat Keterangan</div>
                                     </div>
                                 </label>
-                                <label class="flex items-center space-x-4 p-4 rounded-xl border-2 border-gray-200 hover:border-blue-300 hover:bg-blue-50 cursor-pointer transition-all duration-300 group">
-                                    <input type="checkbox" name="jenis[]" value="Akta Kelahiran" class="checkbox-custom">
+                                <label class="flex items-center space-x-3 p-3 rounded-lg border border-slate-200 hover:border-blue-300 hover:bg-blue-50 cursor-pointer transition-all duration-200 group">
+                                    <input type="checkbox" name="jenis[]" value="Akta Kelahiran" class="w-4 h-4 text-blue-600 border-slate-300 rounded focus:ring-blue-500">
                                     <div class="flex-1">
-                                        <span class="text-gray-800 font-medium group-hover:text-blue-700">Akta Kelahiran</span>
-                                        <div class="text-sm text-gray-500">Dokumen Kelahiran</div>
+                                        <span class="text-slate-800 font-medium text-sm group-hover:text-blue-700">Akta Kelahiran</span>
+                                        <div class="text-xs text-slate-500">Dokumen Kelahiran</div>
                                     </div>
                                 </label>
-                                <label class="flex items-center space-x-4 p-4 rounded-xl border-2 border-gray-200 hover:border-blue-300 hover:bg-blue-50 cursor-pointer transition-all duration-300 group">
-                                    <input type="checkbox" name="jenis[]" value="Akta Kematian" class="checkbox-custom">
+                                <label class="flex items-center space-x-3 p-3 rounded-lg border border-slate-200 hover:border-blue-300 hover:bg-blue-50 cursor-pointer transition-all duration-200 group">
+                                    <input type="checkbox" name="jenis[]" value="Akta Kematian" class="w-4 h-4 text-blue-600 border-slate-300 rounded focus:ring-blue-500">
                                     <div class="flex-1">
-                                        <span class="text-gray-800 font-medium group-hover:text-blue-700">Akta Kematian</span>
-                                        <div class="text-sm text-gray-500">Dokumen Kematian</div>
+                                        <span class="text-slate-800 font-medium text-sm group-hover:text-blue-700">Akta Kematian</span>
+                                        <div class="text-xs text-slate-500">Dokumen Kematian</div>
                                     </div>
                                 </label>
-                                <label class="flex items-center space-x-4 p-4 rounded-xl border-2 border-gray-200 hover:border-blue-300 hover:bg-blue-50 cursor-pointer transition-all duration-300 group">
-                                    <input type="checkbox" name="jenis[]" value="Akta Perkawinan" class="checkbox-custom">
+                                <label class="flex items-center space-x-3 p-3 rounded-lg border border-slate-200 hover:border-blue-300 hover:bg-blue-50 cursor-pointer transition-all duration-200 group">
+                                    <input type="checkbox" name="jenis[]" value="Akta Perkawinan" class="w-4 h-4 text-blue-600 border-slate-300 rounded focus:ring-blue-500">
                                     <div class="flex-1">
-                                        <span class="text-gray-800 font-medium group-hover:text-blue-700">Akta Perkawinan</span>
-                                        <div class="text-sm text-gray-500">Dokumen Nikah</div>
+                                        <span class="text-slate-800 font-medium text-sm group-hover:text-blue-700">Akta Perkawinan</span>
+                                        <div class="text-xs text-slate-500">Dokumen Nikah</div>
                                     </div>
                                 </label>
-                                <label class="flex items-center space-x-4 p-4 rounded-xl border-2 border-gray-200 hover:border-blue-300 hover:bg-blue-50 cursor-pointer transition-all duration-300 group">
-                                    <input type="checkbox" name="jenis[]" value="Lainnya" class="checkbox-custom">
+                                <label class="flex items-center space-x-3 p-3 rounded-lg border border-slate-200 hover:border-blue-300 hover:bg-blue-50 cursor-pointer transition-all duration-200 group">
+                                    <input type="checkbox" name="jenis[]" value="Lainnya" class="w-4 h-4 text-blue-600 border-slate-300 rounded focus:ring-blue-500">
                                     <div class="flex-1">
-                                        <span class="text-gray-800 font-medium group-hover:text-blue-700">Lainnya</span>
-                                        <div class="text-sm text-gray-500">Layanan Lain</div>
+                                        <span class="text-slate-800 font-medium text-sm group-hover:text-blue-700">Lainnya</span>
+                                        <div class="text-xs text-slate-500">Layanan Lain</div>
                                     </div>
                                 </label>
                             </div>
                         </div>
 
-                        <div class="pt-4">
+                        <div class="pt-2">
                             <button type="submit" 
-                                    class="w-full bg-gradient-to-r from-blue-500 via-purple-600 to-indigo-700 text-white py-5 rounded-2xl font-bold text-xl hover:from-blue-600 hover:via-purple-700 hover:to-indigo-800 transform hover:scale-105 hover:shadow-2xl transition-all duration-300 shadow-xl relative overflow-hidden group pulse-glow">
-                                <div class="absolute inset-0 shimmer opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                                <div class="relative flex items-center justify-center">
-                                    <i class="fas fa-paper-plane mr-3 text-2xl group-hover:animate-bounce"></i>
-                                    <span>Kirim Formulir Antrian</span>
-                                </div>
+                                    class="w-full bg-gradient-to-r from-blue-500 to-indigo-600 text-white py-4 rounded-lg font-semibold text-lg hover:from-blue-600 hover:to-indigo-700 transform hover:scale-[1.02] transition-all duration-200 shadow-lg hover:shadow-xl flex items-center justify-center space-x-2">
+                                <i class="fas fa-paper-plane text-lg"></i>
+                                <span>Kirim Formulir Antrian</span>
                             </button>
-                            <p class="text-center text-sm text-gray-500 mt-4">
+                            <p class="text-center text-sm text-slate-500 mt-3 flex items-center justify-center">
                                 <i class="fas fa-shield-alt mr-1"></i>
                                 Data Anda akan tersimpan dengan aman
                             </p>
@@ -370,137 +370,137 @@
     </div>
 
     <!-- Detail Modal -->
-    <div id="detailModal" class="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 hidden backdrop-blur-sm">
-        <div class="bg-white rounded-3xl p-8 max-w-2xl mx-4 animate-fadeInUp shadow-2xl border border-gray-100 max-h-[90vh] overflow-y-auto">
+    <div id="detailModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden backdrop-blur-sm p-4">
+        <div class="bg-white rounded-2xl p-4 md:p-6 max-w-2xl w-full mx-4 animate-fadeInUp shadow-xl border border-slate-200 max-h-[90vh] overflow-y-auto">
             <div class="print-area" id="printArea">
                 <!-- Header -->
-                <div class="text-center mb-8 border-b border-gray-200 pb-6">
-                    <div class="flex items-center justify-center space-x-4 mb-4">
-                        <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
-                            <i class="fas fa-building text-2xl text-white"></i>
+                <div class="text-center mb-6 border-b border-slate-200 pb-4">
+                    <div class="flex flex-col md:flex-row items-center justify-center space-y-3 md:space-y-0 md:space-x-4 mb-4">
+                        <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center">
+                            <i class="fas fa-building text-lg text-white"></i>
                         </div>
-                        <div class="text-left">
-                            <h2 class="text-2xl font-bold text-gray-800">Dinas Kependudukan dan Pencatatan Sipil</h2>
-                            <p class="text-sm text-gray-600">Kabupaten Kepulauan Tanimbar</p>
+                        <div class="text-center md:text-left">
+                            <h2 class="text-lg md:text-xl font-bold text-slate-800">Dinas Kependudukan dan Pencatatan Sipil</h2>
+                            <p class="text-sm text-slate-600">Kabupaten Kepulauan Tanimbar</p>
                         </div>
                     </div>
-                    <h3 class="text-xl font-bold text-gray-800">BUKTI ANTRIAN ONLINE</h3>
+                    <h3 class="text-lg font-bold text-slate-800">BUKTI ANTRIAN ONLINE</h3>
                 </div>
 
                 <!-- Queue Info -->
-                <div class="grid md:grid-cols-2 gap-8 mb-8">
+                <div class="grid md:grid-cols-2 gap-6 mb-6">
                     <div class="space-y-4">
                         <div class="text-center">
-                            <div class="text-6xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-2" id="detailQueueNumber">001</div>
-                            <p class="text-lg font-semibold text-gray-700">Nomor Antrian</p>
-                            <p class="text-sm text-gray-500" id="detailDate">-</p>
+                            <div class="text-4xl md:text-5xl font-bold text-blue-600 mb-2" id="detailQueueNumber">001</div>
+                            <p class="text-base font-semibold text-slate-700">Nomor Antrian</p>
+                            <p class="text-sm text-slate-500" id="detailDate">-</p>
                         </div>
                         
                         <!-- QR Code -->
                         <div class="text-center">
-                            <div id="qrcode" class="inline-block p-4 bg-white border-2 border-gray-200 rounded-lg"></div>
-                            <p class="text-xs text-gray-500 mt-2">Scan QR Code untuk verifikasi</p>
+                            <div id="qrcode" class="inline-block p-3 bg-white border border-slate-200 rounded-lg"></div>
+                            <p class="text-xs text-slate-500 mt-2">Scan QR Code untuk verifikasi</p>
                         </div>
                     </div>
 
-                    <div class="space-y-4">
+                    <div class="space-y-3">
                         <div>
-                            <label class="block text-sm font-semibold text-gray-600 mb-1">Nama Lengkap</label>
-                            <p class="text-lg text-gray-800" id="detailNama">-</p>
+                            <label class="block text-sm font-medium text-slate-600 mb-1">Nama Lengkap</label>
+                            <p class="text-base text-slate-800" id="detailNama">-</p>
                         </div>
                         <div>
-                            <label class="block text-sm font-semibold text-gray-600 mb-1">NIK</label>
-                            <p class="text-lg text-gray-800" id="detailNIK">-</p>
+                            <label class="block text-sm font-medium text-slate-600 mb-1">NIK</label>
+                            <p class="text-base text-slate-800" id="detailNIK">-</p>
                         </div>
                         <div>
-                            <label class="block text-sm font-semibold text-gray-600 mb-1">Alamat</label>
-                            <p class="text-lg text-gray-800" id="detailAlamat">-</p>
+                            <label class="block text-sm font-medium text-slate-600 mb-1">Alamat</label>
+                            <p class="text-base text-slate-800" id="detailAlamat">-</p>
                         </div>
                         <div>
-                            <label class="block text-sm font-semibold text-gray-600 mb-1">Tanggal Kunjungan</label>
-                            <p class="text-lg text-gray-800" id="detailTanggal">-</p>
+                            <label class="block text-sm font-medium text-slate-600 mb-1">Tanggal Kunjungan</label>
+                            <p class="text-base text-slate-800" id="detailTanggal">-</p>
                         </div>
                     </div>
                 </div>
 
                 <!-- Services -->
-                <div class="mb-8">
-                    <h4 class="text-lg font-semibold text-gray-800 mb-4">Jenis Pengurusan:</h4>
-                    <div id="detailJenis" class="grid grid-cols-2 gap-2">
+                <div class="mb-6">
+                    <h4 class="text-base font-semibold text-slate-800 mb-3">Jenis Pengurusan:</h4>
+                    <div id="detailJenis" class="grid grid-cols-1 sm:grid-cols-2 gap-2">
                         <!-- Services will be populated here -->
                     </div>
                 </div>
 
                 <!-- ID Antrian -->
-                <div class="bg-gray-50 rounded-lg p-4 mb-6">
+                <div class="bg-slate-50 rounded-lg p-3 mb-4">
                     <div class="text-center">
-                        <p class="text-sm font-semibold text-gray-600 mb-1">ID Antrian Unik</p>
-                        <p class="text-lg font-mono text-gray-800" id="detailUniqueId">-</p>
+                        <p class="text-sm font-medium text-slate-600 mb-1">ID Antrian Unik</p>
+                        <p class="text-base font-mono text-slate-800" id="detailUniqueId">-</p>
                     </div>
                 </div>
 
                 <!-- Footer -->
-                <div class="border-t border-gray-200 pt-6 text-center">
-                    <p class="text-sm text-gray-600 mb-2">
+                <div class="border-t border-slate-200 pt-4 text-center">
+                    <p class="text-sm text-slate-600 mb-2 flex items-center justify-center">
                         <i class="fas fa-clock mr-1"></i>
                         Jam Pelayanan: Senin - Jumat, 08:00 - 16:00 WITA
                     </p>
-                    <p class="text-xs text-gray-500">
+                    <p class="text-xs text-slate-500">
                         Harap datang sesuai tanggal yang dipilih dan bawa dokumen yang diperlukan
                     </p>
-                    <p class="text-xs text-gray-400 mt-2">
+                    <p class="text-xs text-slate-400 mt-2">
                         Dicetak pada: <span id="printTime">-</span>
                     </p>
                 </div>
             </div>
 
             <!-- Action Buttons (not printed) -->
-            <div class="flex space-x-4 mt-6 print:hidden">
+            <div class="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-3 mt-4 print:hidden">
                 <button onclick="printTicket()" 
-                        class="flex-1 bg-gradient-to-r from-green-500 to-blue-600 text-white py-3 rounded-xl font-semibold hover:from-green-600 hover:to-blue-700 transition-all duration-300">
-                    <i class="fas fa-print mr-2"></i>
-                    Cetak
+                        class="flex-1 bg-gradient-to-r from-green-500 to-emerald-600 text-white py-3 rounded-lg font-medium hover:from-green-600 hover:to-emerald-700 transition-all duration-200 flex items-center justify-center space-x-2">
+                    <i class="fas fa-print"></i>
+                    <span>Cetak</span>
                 </button>
                 <button onclick="downloadPDF()" 
-                        class="flex-1 bg-gradient-to-r from-red-500 to-pink-600 text-white py-3 rounded-xl font-semibold hover:from-red-600 hover:to-pink-700 transition-all duration-300">
-                    <i class="fas fa-file-pdf mr-2"></i>
-                    Download PDF
+                        class="flex-1 bg-gradient-to-r from-red-500 to-rose-600 text-white py-3 rounded-lg font-medium hover:from-red-600 hover:to-rose-700 transition-all duration-200 flex items-center justify-center space-x-2">
+                    <i class="fas fa-file-pdf"></i>
+                    <span>Download PDF</span>
                 </button>
                 <button onclick="closeDetailModal()" 
-                        class="flex-1 bg-gradient-to-r from-gray-500 to-gray-600 text-white py-3 rounded-xl font-semibold hover:from-gray-600 hover:to-gray-700 transition-all duration-300">
-                    <i class="fas fa-times mr-2"></i>
-                    Tutup
+                        class="flex-1 bg-gradient-to-r from-slate-500 to-slate-600 text-white py-3 rounded-lg font-medium hover:from-slate-600 hover:to-slate-700 transition-all duration-200 flex items-center justify-center space-x-2">
+                    <i class="fas fa-times"></i>
+                    <span>Tutup</span>
                 </button>
             </div>
         </div>
     </div>
 
     <!-- Success Modal -->
-    <div id="successModal" class="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 hidden backdrop-blur-sm">
-        <div class="bg-white rounded-3xl p-10 max-w-lg mx-4 animate-fadeInUp shadow-2xl border border-gray-100">
+    <div id="successModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden backdrop-blur-sm p-4">
+        <div class="bg-white rounded-2xl p-6 md:p-8 max-w-md w-full mx-4 animate-fadeInUp shadow-xl border border-slate-200">
             <div class="text-center">
-                <div class="w-24 h-24 bg-gradient-to-br from-green-400 to-blue-500 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg floating-animation pulse-glow">
-                    <i class="fas fa-check text-4xl text-white"></i>
+                <div class="w-16 h-16 bg-gradient-to-br from-green-500 to-blue-600 rounded-xl flex items-center justify-center mx-auto mb-4 shadow-lg">
+                    <i class="fas fa-check text-2xl text-white"></i>
                 </div>
-                <h3 class="text-3xl font-bold bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent mb-3">Formulir Berhasil Dikirim!</h3>
-                <p class="text-gray-600 mb-6 text-lg">Nomor antrian Anda hari ini adalah:</p>
-                <div class="bg-gradient-to-r from-blue-50 to-purple-50 rounded-2xl p-6 mb-6 border border-blue-100 hover:shadow-xl hover:border-blue-300 transition-all duration-300 cursor-pointer" onclick="showQueueDetail()">
-                    <div class="text-5xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-2 hover:scale-110 transition-transform duration-300 select-none" id="queueNumber">A001</div>
-                    <p class="text-sm text-gray-500 animate-pulse">
+                <h3 class="text-2xl font-bold text-slate-800 mb-2">Formulir Berhasil Dikirim!</h3>
+                <p class="text-slate-600 mb-6">Nomor antrian Anda hari ini adalah:</p>
+                <div class="bg-blue-50 rounded-xl p-6 mb-6 border border-blue-100 hover:shadow-lg hover:border-blue-300 transition-all duration-200 cursor-pointer" onclick="showQueueDetail()">
+                    <div class="text-4xl font-bold text-blue-600 mb-2 hover:scale-105 transition-transform duration-200 select-none" id="queueNumber">001</div>
+                    <p class="text-sm text-slate-500">
                         <i class="fas fa-mouse-pointer mr-1"></i>
                         Klik nomor untuk melihat detail & cetak
                     </p>
                 </div>
-                <div class="bg-yellow-50 border border-yellow-200 rounded-xl p-4 mb-6">
-                    <p class="text-sm text-yellow-800">
-                        <i class="fas fa-info-circle mr-2"></i>
-                        Harap datang sesuai tanggal yang dipilih. Nomor antrian akan direset setiap hari.
+                <div class="bg-amber-50 border border-amber-200 rounded-lg p-3 mb-6">
+                    <p class="text-sm text-amber-800 flex items-start">
+                        <i class="fas fa-info-circle mr-2 mt-0.5 flex-shrink-0"></i>
+                        <span>Harap datang sesuai tanggal yang dipilih. Nomor antrian akan direset setiap hari.</span>
                     </p>
                 </div>
                 <button id="closeModal" 
-                        class="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-10 py-4 rounded-2xl font-bold text-lg hover:from-blue-600 hover:to-purple-700 transform hover:scale-105 transition-all duration-300 shadow-lg">
-                    <i class="fas fa-times mr-2"></i>
-                    Tutup
+                        class="w-full bg-gradient-to-r from-blue-500 to-indigo-600 text-white py-3 rounded-lg font-semibold hover:from-blue-600 hover:to-indigo-700 transition-all duration-200 shadow-lg flex items-center justify-center space-x-2">
+                    <i class="fas fa-times"></i>
+                    <span>Tutup</span>
                 </button>
             </div>
         </div>
@@ -524,31 +524,128 @@
         // Global variable to store current queue data
         let currentQueueData = null;
 
-        // Queue management - Daily reset system
+        // Queue management - Get from Google Sheets
+        const GOOGLE_SHEETS_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQBHQp-HvkDh82aoj7E1tidYFqlLgIoVzZR9uYs7K1-_zXz9aOToYxvPjCEDqJ1IKbSxjmbgNJTpZRJ/pub?gid=0&single=true&output=csv';
+        
         function getTodayKey() {
             return new Date().toISOString().split('T')[0]; // Format: YYYY-MM-DD
         }
         
-        function getDailyQueueCounter() {
+        // Fetch data from Google Sheets CSV
+        async function fetchQueueDataFromSheets() {
+            try {
+                console.log('Mengambil data dari Google Sheets...');
+                const response = await fetch(GOOGLE_SHEETS_CSV_URL + '&t=' + Date.now());
+                const csvText = await response.text();
+                
+                // Parse CSV data
+                const lines = csvText.split('\n');
+                const data = [];
+                
+                // Skip header row (index 0)
+                for (let i = 1; i < lines.length; i++) {
+                    const line = lines[i].trim();
+                    if (line) {
+                        // Parse CSV line with proper handling of commas in quotes
+                        const columns = parseCSVLine(line);
+                        if (columns.length >= 4) {
+                            data.push({
+                                timestamp: columns[0],
+                                id_unik: columns[1],
+                                nomor_antrian: columns[2],
+                                tanggal_kunjungan: columns[3],
+                                nik: columns[4],
+                                nama: columns[5],
+                                kecamatan: columns[6],
+                                desa: columns[7],
+                                jenis: columns[8],
+                                status: columns[9]
+                            });
+                        }
+                    }
+                }
+                
+                console.log('Data berhasil diambil:', data.length, 'records');
+                return data;
+            } catch (error) {
+                console.error('Error fetching data from Google Sheets:', error);
+                return [];
+            }
+        }
+        
+        // Parse CSV line with proper comma handling
+        function parseCSVLine(line) {
+            const result = [];
+            let current = '';
+            let inQuotes = false;
+            
+            for (let i = 0; i < line.length; i++) {
+                const char = line[i];
+                
+                if (char === '"') {
+                    inQuotes = !inQuotes;
+                } else if (char === ',' && !inQuotes) {
+                    result.push(current.trim());
+                    current = '';
+                } else {
+                    current += char;
+                }
+            }
+            
+            result.push(current.trim());
+            return result;
+        }
+        
+        // Get next queue number for today
+        async function getNextQueueNumber(selectedDate) {
+            try {
+                const data = await fetchQueueDataFromSheets();
+                const today = selectedDate || getTodayKey();
+                
+                // Filter data for today's date
+                const todayData = data.filter(item => {
+                    const itemDate = item.tanggal_kunjungan;
+                    return itemDate === today;
+                });
+                
+                console.log(`Data untuk tanggal ${today}:`, todayData.length, 'records');
+                
+                // Find the highest queue number for today
+                let maxNumber = 0;
+                todayData.forEach(item => {
+                    const queueNum = parseInt(item.nomor_antrian) || 0;
+                    if (queueNum > maxNumber) {
+                        maxNumber = queueNum;
+                    }
+                });
+                
+                const nextNumber = maxNumber + 1;
+                console.log(`Nomor antrian berikutnya untuk ${today}:`, nextNumber);
+                
+                return nextNumber;
+            } catch (error) {
+                console.error('Error getting next queue number:', error);
+                // Fallback to local storage if Google Sheets fails
+                return getDailyQueueCounterFallback();
+            }
+        }
+        
+        // Fallback function using localStorage
+        function getDailyQueueCounterFallback() {
             const today = getTodayKey();
             const savedDate = localStorage.getItem('queueDate');
-            let counter = parseInt(localStorage.getItem('dailyQueueCounter')) || 1;
+            let counter = parseInt(localStorage.getItem('dailyQueueCounter')) || 0;
             
             // Reset counter if it's a new day
             if (savedDate !== today) {
-                counter = 1;
+                counter = 0;
                 localStorage.setItem('queueDate', today);
-                localStorage.setItem('dailyQueueCounter', '1');
+                localStorage.setItem('dailyQueueCounter', '0');
             }
             
-            return counter;
-        }
-        
-        function incrementDailyCounter() {
-            let counter = getDailyQueueCounter();
             counter++;
             localStorage.setItem('dailyQueueCounter', counter.toString());
-            return counter - 1; // Return the number that was just used
+            return counter;
         }
         
         // Generate unique ID for queue
@@ -605,7 +702,7 @@
         const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxArSslEnmrlQ9N2LFxuXglohlbwi7pmiBKwdSrzIt-k7Q77Ly8WZujGvbZv4nXaQIA/exec';
 
         // Handle form submission
-        queueForm.addEventListener('submit', function(e) {
+        queueForm.addEventListener('submit', async function(e) {
             e.preventDefault();
             
             const formData = new FormData(queueForm);
@@ -627,55 +724,58 @@
             // Show loading state
             const submitButton = document.querySelector('button[type="submit"]');
             const originalText = submitButton.innerHTML;
-            submitButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-3"></i>Mengirim Data...';
+            submitButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-3"></i>Mengambil Nomor Antrian...';
             submitButton.disabled = true;
             
-            // Get daily queue number
-            const queueNumber = incrementDailyCounter();
-            const uniqueId = generateUniqueId();
-            
-            const queueItem = {
-                id: Date.now(),
-                uniqueId: uniqueId,
-                tanggal: formData.get('tanggal'),
-                nik: formData.get('nik'),
-                nama: formData.get('nama'),
-                kecamatan: formData.get('kecamatan'),
-                desa: formData.get('desa'),
-                jenis: jenisArray,
-                nomor: String(queueNumber).padStart(3, '0'),
-                timestamp: new Date().toISOString()
-            };
-            
-            // Send data to Google Sheets
-            sendToGoogleSheets(queueItem)
-                .then(response => {
-                    console.log('Data berhasil dikirim:', response);
-                    
-                    // Store current queue data for detail view
-                    currentQueueData = queueItem;
-                    
-                    // Show success modal
-                    document.getElementById('queueNumber').textContent = queueItem.nomor;
-                    successModal.classList.remove('hidden');
-                    
-                    // Reset form
-                    queueForm.reset();
-                    updateDesaOptions();
-                    
-                    // Reset to today's date
-                    const todayReset = new Date().toISOString().split('T')[0];
-                    document.getElementById('tanggal').value = todayReset;
-                })
-                .catch(error => {
-                    console.error('Error mengirim data:', error);
-                    alert('Terjadi kesalahan saat mengirim data. Silakan coba lagi.');
-                })
-                .finally(() => {
-                    // Reset button state
-                    submitButton.innerHTML = originalText;
-                    submitButton.disabled = false;
-                });
+            try {
+                // Get next queue number from Google Sheets
+                const queueNumber = await getNextQueueNumber(formData.get('tanggal'));
+                const uniqueId = generateUniqueId();
+                
+                submitButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-3"></i>Mengirim Data...';
+                
+                const queueItem = {
+                    id: Date.now(),
+                    uniqueId: uniqueId,
+                    tanggal: formData.get('tanggal'),
+                    nik: formData.get('nik'),
+                    nama: formData.get('nama'),
+                    kecamatan: formData.get('kecamatan'),
+                    desa: formData.get('desa'),
+                    jenis: jenisArray,
+                    nomor: String(queueNumber).padStart(3, '0'),
+                    timestamp: new Date().toISOString()
+                };
+                
+                console.log('Mengirim data dengan nomor antrian:', queueItem.nomor);
+                
+                // Send data to Google Sheets
+                const response = await sendToGoogleSheets(queueItem);
+                console.log('Data berhasil dikirim:', response);
+                
+                // Store current queue data for detail view
+                currentQueueData = queueItem;
+                
+                // Show success modal
+                document.getElementById('queueNumber').textContent = queueItem.nomor;
+                successModal.classList.remove('hidden');
+                
+                // Reset form
+                queueForm.reset();
+                updateDesaOptions();
+                
+                // Reset to today's date
+                const todayReset = new Date().toISOString().split('T')[0];
+                document.getElementById('tanggal').value = todayReset;
+                
+            } catch (error) {
+                console.error('Error dalam proses pengiriman:', error);
+                alert('Terjadi kesalahan saat memproses data. Silakan coba lagi.');
+            } finally {
+                // Reset button state
+                submitButton.innerHTML = originalText;
+                submitButton.disabled = false;
+            }
         });
 
         // Function to send data to Google Sheets
@@ -713,65 +813,110 @@
 
         // Show queue detail
         function showQueueDetail() {
+            console.log('showQueueDetail called, currentQueueData:', currentQueueData);
+            
             if (!currentQueueData) {
-                alert('Data antrian tidak tersedia!');
+                console.error('currentQueueData is null or undefined');
+                alert('Data antrian tidak tersedia! Silakan isi formulir terlebih dahulu.');
                 return;
             }
             
-            console.log('Showing queue detail for:', currentQueueData);
-            
-            // Populate detail modal
-            document.getElementById('detailQueueNumber').textContent = currentQueueData.nomor;
-            document.getElementById('detailDate').textContent = new Date().toLocaleDateString('id-ID');
-            document.getElementById('detailNama').textContent = currentQueueData.nama;
-            document.getElementById('detailNIK').textContent = currentQueueData.nik;
-            document.getElementById('detailAlamat').textContent = `${currentQueueData.desa}, ${currentQueueData.kecamatan}`;
-            document.getElementById('detailTanggal').textContent = new Date(currentQueueData.tanggal).toLocaleDateString('id-ID');
-            document.getElementById('detailUniqueId').textContent = currentQueueData.uniqueId;
-            document.getElementById('printTime').textContent = new Date().toLocaleString('id-ID');
-            
-            // Populate services
-            const jenisContainer = document.getElementById('detailJenis');
-            jenisContainer.innerHTML = currentQueueData.jenis.map(jenis => 
-                `<div class="bg-blue-100 text-blue-800 px-3 py-2 rounded-lg text-sm font-medium">${jenis}</div>`
-            ).join('');
-            
-            // Generate QR Code
+            try {
+                // Populate detail modal with error checking
+                const elements = {
+                    'detailQueueNumber': currentQueueData.nomor || '000',
+                    'detailDate': new Date().toLocaleDateString('id-ID'),
+                    'detailNama': currentQueueData.nama || 'Tidak tersedia',
+                    'detailNIK': currentQueueData.nik || 'Tidak tersedia',
+                    'detailAlamat': `${currentQueueData.desa || 'Tidak tersedia'}, ${currentQueueData.kecamatan || 'Tidak tersedia'}`,
+                    'detailTanggal': currentQueueData.tanggal ? new Date(currentQueueData.tanggal).toLocaleDateString('id-ID') : 'Tidak tersedia',
+                    'detailUniqueId': currentQueueData.uniqueId || 'Tidak tersedia',
+                    'printTime': new Date().toLocaleString('id-ID')
+                };
+                
+                // Update each element safely
+                Object.keys(elements).forEach(id => {
+                    const element = document.getElementById(id);
+                    if (element) {
+                        element.textContent = elements[id];
+                        console.log(`Updated ${id}:`, elements[id]);
+                    } else {
+                        console.error(`Element with id ${id} not found`);
+                    }
+                });
+                
+                // Populate services
+                const jenisContainer = document.getElementById('detailJenis');
+                if (jenisContainer && currentQueueData.jenis && Array.isArray(currentQueueData.jenis)) {
+                    jenisContainer.innerHTML = currentQueueData.jenis.map(jenis => 
+                        `<div class="bg-blue-100 text-blue-800 px-3 py-2 rounded-lg text-sm font-medium">${jenis}</div>`
+                    ).join('');
+                    console.log('Services populated:', currentQueueData.jenis);
+                } else {
+                    console.error('jenisContainer not found or jenis data invalid');
+                    if (jenisContainer) {
+                        jenisContainer.innerHTML = '<div class="text-slate-500 text-sm">Tidak ada layanan dipilih</div>';
+                    }
+                }
+                
+                // Generate QR Code
+                generateQRCode();
+                
+                // Show modal
+                document.getElementById('successModal').classList.add('hidden');
+                document.getElementById('detailModal').classList.remove('hidden');
+                console.log('Detail modal shown successfully');
+                
+            } catch (error) {
+                console.error('Error in showQueueDetail:', error);
+                alert('Terjadi kesalahan saat menampilkan detail antrian.');
+            }
+        }
+        
+        // Separate QR Code generation function
+        function generateQRCode() {
             const qrContainer = document.getElementById('qrcode');
+            if (!qrContainer) {
+                console.error('QR code container not found');
+                return;
+            }
+            
             qrContainer.innerHTML = ''; // Clear previous QR code
             
             const qrData = JSON.stringify({
-                id: currentQueueData.uniqueId,
-                nomor: currentQueueData.nomor,
-                nama: currentQueueData.nama,
-                tanggal: currentQueueData.tanggal,
-                timestamp: currentQueueData.timestamp
+                id: currentQueueData.uniqueId || 'unknown',
+                nomor: currentQueueData.nomor || '000',
+                nama: currentQueueData.nama || 'Unknown',
+                tanggal: currentQueueData.tanggal || new Date().toISOString().split('T')[0],
+                timestamp: currentQueueData.timestamp || new Date().toISOString()
             });
             
             // Create canvas element for QR code
             const canvas = document.createElement('canvas');
             qrContainer.appendChild(canvas);
             
-            QRCode.toCanvas(canvas, qrData, {
-                width: 150,
-                height: 150,
-                margin: 2,
-                color: {
-                    dark: '#1f2937',
-                    light: '#ffffff'
-                }
-            }, function (error) {
-                if (error) {
-                    console.error('QR Code error:', error);
-                    qrContainer.innerHTML = '<div class="text-red-500 text-sm">QR Code gagal dibuat</div>';
-                } else {
-                    console.log('QR Code berhasil dibuat');
-                }
-            });
-            
-            // Show modal
-            document.getElementById('successModal').classList.add('hidden');
-            document.getElementById('detailModal').classList.remove('hidden');
+            // Generate QR Code with error handling
+            if (typeof QRCode !== 'undefined') {
+                QRCode.toCanvas(canvas, qrData, {
+                    width: 120,
+                    height: 120,
+                    margin: 2,
+                    color: {
+                        dark: '#1e293b',
+                        light: '#ffffff'
+                    }
+                }, function (error) {
+                    if (error) {
+                        console.error('QR Code generation error:', error);
+                        qrContainer.innerHTML = '<div class="text-red-500 text-sm p-4 border border-red-200 rounded">QR Code gagal dibuat</div>';
+                    } else {
+                        console.log('QR Code generated successfully');
+                    }
+                });
+            } else {
+                console.error('QRCode library not loaded');
+                qrContainer.innerHTML = '<div class="text-slate-500 text-sm p-4 border border-slate-200 rounded">QR Code tidak tersedia</div>';
+            }
         }
         
         // Close detail modal
@@ -925,5 +1070,5 @@
             }
         });
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'985f6df7c31fce8a',t:'MTc1OTAyMjU0NC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'985f934177923e24',t:'MTc1OTAyNDA3Mi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
