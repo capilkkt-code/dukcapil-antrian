@@ -6,7 +6,7 @@
     <title>Antrian Online - Layanan Kependudukan</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode/1.5.3/qrcode.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js" onerror="console.warn('QR Code library failed to load')"></script>
     <style>
         body {
             box-sizing: border-box;
@@ -156,194 +156,391 @@
                 border-radius: 0;
             }
         }
+
+        .error-message {
+            color: #dc2626;
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        .input-error {
+            border-color: #dc2626 !important;
+            box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1) !important;
+        }
+
+        .nav-tabs {
+            display: flex;
+            border-bottom: 2px solid #e2e8f0;
+            margin-bottom: 2rem;
+        }
+
+        .nav-tab {
+            padding: 1rem 2rem;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            color: #64748b;
+        }
+
+        .nav-tab.active {
+            color: #3b82f6;
+            border-bottom-color: #3b82f6;
+            background: rgba(59, 130, 246, 0.05);
+        }
+
+        .nav-tab:hover:not(.active) {
+            color: #475569;
+            background: rgba(148, 163, 184, 0.05);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
     </style>
 </head>
 <body class="min-h-screen gradient-bg font-sans">
-
-
-    <div class="container mx-auto px-4 max-w-4xl">
-        <div class="flex justify-center">
-            <!-- Form Section -->
-            <div class="w-full animate-fadeInUp">
-                <div class="bg-white rounded-2xl shadow-lg p-6 md:p-8 border border-slate-200">
-                    <div class="text-center mb-8">
-                        <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center mx-auto mb-4 shadow-lg">
-                            <i class="fas fa-clipboard-list text-2xl text-white"></i>
-                        </div>
-                        <h2 class="text-2xl md:text-3xl font-bold text-slate-800 mb-2">Formulir Antrian Online</h2>
-                        <p class="text-slate-600">Silakan lengkapi data untuk mendaftar antrian layanan kependudukan</p>
-                        <div class="mt-4 p-3 bg-blue-50 rounded-xl border border-blue-100">
-                            <p class="text-sm text-slate-600 flex items-center justify-center">
-                                <i class="fas fa-info-circle text-blue-500 mr-2"></i>
-                                Nomor antrian akan direset setiap hari
-                            </p>
-                        </div>
+    <!-- Header -->
+    <header class="bg-white shadow-sm border-b border-slate-200 sticky top-0 z-40">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-4">
+                    <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg">
+                        <i class="fas fa-building text-xl text-white"></i>
                     </div>
+                    <div>
+                        <h1 class="text-xl font-bold text-slate-800">Dinas Kependudukan</h1>
+                        <p class="text-sm text-slate-600">Kabupaten Kepulauan Tanimbar</p>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <div class="text-right">
+                        <p class="text-sm font-medium text-slate-700" id="currentDate">-</p>
+                        <p class="text-xs text-slate-500" id="currentTime">-</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
 
-
-
-                    <form id="queueForm" class="space-y-6">
-                        <!-- Grid untuk input utama -->
-                        <div class="grid md:grid-cols-2 gap-4">
-                            <!-- Tanggal -->
-                            <div class="space-y-2">
-                                <label for="tanggal" class="block text-sm font-medium text-slate-700">
-                                    <i class="fas fa-calendar-alt mr-2 text-blue-500"></i>Tanggal Kunjungan
-                                </label>
-                                <input type="date" id="tanggal" name="tanggal" 
-                                       class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-100 focus:outline-none transition-all duration-200 bg-white"
-                                       required>
-                            </div>
-
-                            <!-- NIK -->
-                            <div class="space-y-2">
-                                <label for="nik" class="block text-sm font-medium text-slate-700">
-                                    <i class="fas fa-id-card mr-2 text-blue-500"></i>NIK (16 digit)
-                                </label>
-                                <input type="text" id="nik" name="nik" 
-                                       class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-100 focus:outline-none transition-all duration-200 bg-white"
-                                       pattern="[0-9]{16}" maxlength="16" required>
-                            </div>
-                        </div>
-
-                        <!-- Nama Lengkap -->
-                        <div class="space-y-2">
-                            <label for="nama" class="block text-sm font-medium text-slate-700">
-                                <i class="fas fa-user mr-2 text-blue-500"></i>Nama Lengkap
-                            </label>
-                            <input type="text" id="nama" name="nama" 
-                                   class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-100 focus:outline-none transition-all duration-200 bg-white"
-                                   required>
-                        </div>
-
-                        <!-- Grid untuk lokasi -->
-                        <div class="grid md:grid-cols-2 gap-4">
-                            <!-- Kecamatan -->
-                            <div class="space-y-2">
-                                <label for="kecamatan" class="block text-sm font-medium text-slate-700">
-                                    <i class="fas fa-map-marker-alt mr-2 text-blue-500"></i>Kecamatan
-                                </label>
-                                <select id="kecamatan" name="kecamatan" 
-                                        class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-100 focus:outline-none transition-all duration-200 bg-white"
-                                        required>
-                                    <option value="">Pilih Kecamatan</option>
-                                    <option value="Tanimbar Selatan">Tanimbar Selatan</option>
-                                    <option value="Selaru">Selaru</option>
-                                    <option value="Wertamrian">Wertamrian</option>
-                                    <option value="Wermaktian">Wermaktian</option>
-                                    <option value="Tanimbar Utara">Tanimbar Utara</option>
-                                    <option value="Fordata">Fordata</option>
-                                    <option value="Wuarlabobar">Wuarlabobar</option>
-                                    <option value="Kormomolin">Kormomolin</option>
-                                    <option value="Nirunmas">Nirunmas</option>
-                                    <option value="Molumaru">Molumaru</option>
-                                </select>
-                            </div>
-
-                            <!-- Desa -->
-                            <div class="space-y-2">
-                                <label for="desa" class="block text-sm font-medium text-slate-700">
-                                    <i class="fas fa-home mr-2 text-blue-500"></i>Desa
-                                </label>
-                                <select id="desa" name="desa" 
-                                        class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-100 focus:outline-none transition-all duration-200 bg-white disabled:bg-slate-50 disabled:text-slate-500"
-                                        required disabled>
-                                    <option value="">Pilih Desa</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <!-- Jenis Pengurusan -->
-                        <div class="space-y-4">
-                            <div>
-                                <h3 class="text-lg font-semibold text-slate-800 mb-2 flex items-center">
-                                    <i class="fas fa-file-alt mr-2 text-blue-500"></i>
-                                    Jenis Pengurusan
-                                </h3>
-                                <p class="text-sm text-slate-600 mb-4">Pilih layanan yang ingin Anda urus (dapat memilih lebih dari satu)</p>
-                            </div>
-                            <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                                <label class="flex items-center space-x-3 p-3 rounded-lg border border-slate-200 hover:border-blue-300 hover:bg-blue-50 cursor-pointer transition-all duration-200 group">
-                                    <input type="checkbox" name="jenis[]" value="KK" class="w-4 h-4 text-blue-600 border-slate-300 rounded focus:ring-blue-500">
-                                    <div class="flex-1">
-                                        <span class="text-slate-800 font-medium text-sm group-hover:text-blue-700">Kartu Keluarga</span>
-                                        <div class="text-xs text-slate-500">(KK)</div>
-                                    </div>
-                                </label>
-                                <label class="flex items-center space-x-3 p-3 rounded-lg border border-slate-200 hover:border-blue-300 hover:bg-blue-50 cursor-pointer transition-all duration-200 group">
-                                    <input type="checkbox" name="jenis[]" value="KTP El" class="w-4 h-4 text-blue-600 border-slate-300 rounded focus:ring-blue-500">
-                                    <div class="flex-1">
-                                        <span class="text-slate-800 font-medium text-sm group-hover:text-blue-700">KTP Elektronik</span>
-                                        <div class="text-xs text-slate-500">(e-KTP)</div>
-                                    </div>
-                                </label>
-                                <label class="flex items-center space-x-3 p-3 rounded-lg border border-slate-200 hover:border-blue-300 hover:bg-blue-50 cursor-pointer transition-all duration-200 group">
-                                    <input type="checkbox" name="jenis[]" value="KIA" class="w-4 h-4 text-blue-600 border-slate-300 rounded focus:ring-blue-500">
-                                    <div class="flex-1">
-                                        <span class="text-slate-800 font-medium text-sm group-hover:text-blue-700">Kartu Identitas Anak</span>
-                                        <div class="text-xs text-slate-500">(KIA)</div>
-                                    </div>
-                                </label>
-                                <label class="flex items-center space-x-3 p-3 rounded-lg border border-slate-200 hover:border-blue-300 hover:bg-blue-50 cursor-pointer transition-all duration-200 group">
-                                    <input type="checkbox" name="jenis[]" value="SKPWNI" class="w-4 h-4 text-blue-600 border-slate-300 rounded focus:ring-blue-500">
-                                    <div class="flex-1">
-                                        <span class="text-slate-800 font-medium text-sm group-hover:text-blue-700">SKPWNI</span>
-                                        <div class="text-xs text-slate-500">Surat Keterangan</div>
-                                    </div>
-                                </label>
-                                <label class="flex items-center space-x-3 p-3 rounded-lg border border-slate-200 hover:border-blue-300 hover:bg-blue-50 cursor-pointer transition-all duration-200 group">
-                                    <input type="checkbox" name="jenis[]" value="SKDWNI" class="w-4 h-4 text-blue-600 border-slate-300 rounded focus:ring-blue-500">
-                                    <div class="flex-1">
-                                        <span class="text-slate-800 font-medium text-sm group-hover:text-blue-700">SKDWNI</span>
-                                        <div class="text-xs text-slate-500">Surat Keterangan</div>
-                                    </div>
-                                </label>
-                                <label class="flex items-center space-x-3 p-3 rounded-lg border border-slate-200 hover:border-blue-300 hover:bg-blue-50 cursor-pointer transition-all duration-200 group">
-                                    <input type="checkbox" name="jenis[]" value="Akta Kelahiran" class="w-4 h-4 text-blue-600 border-slate-300 rounded focus:ring-blue-500">
-                                    <div class="flex-1">
-                                        <span class="text-slate-800 font-medium text-sm group-hover:text-blue-700">Akta Kelahiran</span>
-                                        <div class="text-xs text-slate-500">Dokumen Kelahiran</div>
-                                    </div>
-                                </label>
-                                <label class="flex items-center space-x-3 p-3 rounded-lg border border-slate-200 hover:border-blue-300 hover:bg-blue-50 cursor-pointer transition-all duration-200 group">
-                                    <input type="checkbox" name="jenis[]" value="Akta Kematian" class="w-4 h-4 text-blue-600 border-slate-300 rounded focus:ring-blue-500">
-                                    <div class="flex-1">
-                                        <span class="text-slate-800 font-medium text-sm group-hover:text-blue-700">Akta Kematian</span>
-                                        <div class="text-xs text-slate-500">Dokumen Kematian</div>
-                                    </div>
-                                </label>
-                                <label class="flex items-center space-x-3 p-3 rounded-lg border border-slate-200 hover:border-blue-300 hover:bg-blue-50 cursor-pointer transition-all duration-200 group">
-                                    <input type="checkbox" name="jenis[]" value="Akta Perkawinan" class="w-4 h-4 text-blue-600 border-slate-300 rounded focus:ring-blue-500">
-                                    <div class="flex-1">
-                                        <span class="text-slate-800 font-medium text-sm group-hover:text-blue-700">Akta Perkawinan</span>
-                                        <div class="text-xs text-slate-500">Dokumen Nikah</div>
-                                    </div>
-                                </label>
-                                <label class="flex items-center space-x-3 p-3 rounded-lg border border-slate-200 hover:border-blue-300 hover:bg-blue-50 cursor-pointer transition-all duration-200 group">
-                                    <input type="checkbox" name="jenis[]" value="Lainnya" class="w-4 h-4 text-blue-600 border-slate-300 rounded focus:ring-blue-500">
-                                    <div class="flex-1">
-                                        <span class="text-slate-800 font-medium text-sm group-hover:text-blue-700">Lainnya</span>
-                                        <div class="text-xs text-slate-500">Layanan Lain</div>
-                                    </div>
-                                </label>
-                            </div>
-                        </div>
-
-                        <div class="pt-2">
-                            <button type="submit" 
-                                    class="w-full bg-gradient-to-r from-blue-500 to-indigo-600 text-white py-4 rounded-lg font-semibold text-lg hover:from-blue-600 hover:to-indigo-700 transform hover:scale-[1.02] transition-all duration-200 shadow-lg hover:shadow-xl flex items-center justify-center space-x-2">
-                                <i class="fas fa-paper-plane text-lg"></i>
-                                <span>Kirim Formulir Antrian</span>
-                            </button>
-                            <p class="text-center text-sm text-slate-500 mt-3 flex items-center justify-center">
-                                <i class="fas fa-shield-alt mr-1"></i>
-                                Data Anda akan tersimpan dengan aman
-                            </p>
-                        </div>
-                    </form>
+    <div class="container mx-auto px-4 py-8 max-w-6xl">
+        <!-- Navigation Tabs -->
+        <div class="bg-white rounded-2xl shadow-lg border border-slate-200 mb-8">
+            <div class="nav-tabs">
+                <div class="nav-tab active" onclick="switchTab('form')">
+                    <i class="fas fa-edit mr-2"></i>Buat Antrian
+                </div>
+                <div class="nav-tab" onclick="switchTab('check')">
+                    <i class="fas fa-search mr-2"></i>Cek Antrian
+                </div>
+                <div class="nav-tab" onclick="switchTab('stats')">
+                    <i class="fas fa-chart-bar mr-2"></i>Statistik
                 </div>
             </div>
 
+            <!-- Form Tab -->
+            <div id="formTab" class="tab-content active p-6 md:p-8">
+                <div class="text-center mb-8">
+                    <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center mx-auto mb-4 shadow-lg">
+                        <i class="fas fa-clipboard-list text-2xl text-white"></i>
+                    </div>
+                    <h2 class="text-2xl md:text-3xl font-bold text-slate-800 mb-2">Formulir Antrian Online</h2>
+                    <p class="text-slate-600">Silakan lengkapi data untuk mendaftar antrian layanan kependudukan</p>
+                    <div class="mt-4 p-3 bg-blue-50 rounded-xl border border-blue-100">
+                        <p class="text-sm text-slate-600 flex items-center justify-center">
+                            <i class="fas fa-info-circle text-blue-500 mr-2"></i>
+                            Nomor antrian akan direset setiap hari
+                        </p>
+                    </div>
+                </div>
+
+                <form id="queueForm" class="space-y-6">
+                    <!-- Grid untuk input utama -->
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <!-- Tanggal -->
+                        <div class="space-y-2">
+                            <label for="tanggal" class="block text-sm font-medium text-slate-700">
+                                <i class="fas fa-calendar-alt mr-2 text-blue-500"></i>Tanggal Kunjungan
+                            </label>
+                            <input type="date" id="tanggal" name="tanggal" 
+                                   class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-100 focus:outline-none transition-all duration-200 bg-white"
+                                   required>
+                            <div class="error-message" id="tanggalError">Tanggal kunjungan harus dipilih</div>
+                        </div>
+
+                        <!-- NIK -->
+                        <div class="space-y-2">
+                            <label for="nik" class="block text-sm font-medium text-slate-700">
+                                <i class="fas fa-id-card mr-2 text-blue-500"></i>NIK (16 digit)
+                            </label>
+                            <input type="text" id="nik" name="nik" 
+                                   class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-100 focus:outline-none transition-all duration-200 bg-white"
+                                   pattern="[0-9]{16}" maxlength="16" required>
+                            <div class="error-message" id="nikError">NIK harus 16 digit angka</div>
+                        </div>
+                    </div>
+
+                    <!-- Nama Lengkap -->
+                    <div class="space-y-2">
+                        <label for="nama" class="block text-sm font-medium text-slate-700">
+                            <i class="fas fa-user mr-2 text-blue-500"></i>Nama Lengkap
+                        </label>
+                        <input type="text" id="nama" name="nama" 
+                               class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-100 focus:outline-none transition-all duration-200 bg-white"
+                               required>
+                        <div class="error-message" id="namaError">Nama lengkap harus diisi minimal 2 karakter</div>
+                    </div>
+
+                    <!-- Grid untuk lokasi -->
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <!-- Kecamatan -->
+                        <div class="space-y-2">
+                            <label for="kecamatan" class="block text-sm font-medium text-slate-700">
+                                <i class="fas fa-map-marker-alt mr-2 text-blue-500"></i>Kecamatan
+                            </label>
+                            <select id="kecamatan" name="kecamatan" 
+                                    class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-100 focus:outline-none transition-all duration-200 bg-white"
+                                    required>
+                                <option value="">Pilih Kecamatan</option>
+                                <option value="Tanimbar Selatan">Tanimbar Selatan</option>
+                                <option value="Selaru">Selaru</option>
+                                <option value="Wertamrian">Wertamrian</option>
+                                <option value="Wermaktian">Wermaktian</option>
+                                <option value="Tanimbar Utara">Tanimbar Utara</option>
+                                <option value="Fordata">Fordata</option>
+                                <option value="Wuarlabobar">Wuarlabobar</option>
+                                <option value="Kormomolin">Kormomolin</option>
+                                <option value="Nirunmas">Nirunmas</option>
+                                <option value="Molumaru">Molumaru</option>
+                            </select>
+                            <div class="error-message" id="kecamatanError">Kecamatan harus dipilih</div>
+                        </div>
+
+                        <!-- Desa -->
+                        <div class="space-y-2">
+                            <label for="desa" class="block text-sm font-medium text-slate-700">
+                                <i class="fas fa-home mr-2 text-blue-500"></i>Desa
+                            </label>
+                            <select id="desa" name="desa" 
+                                    class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-100 focus:outline-none transition-all duration-200 bg-white disabled:bg-slate-50 disabled:text-slate-500"
+                                    required disabled>
+                                <option value="">Pilih Desa</option>
+                            </select>
+                            <div class="error-message" id="desaError">Desa harus dipilih dan sesuai dengan kecamatan</div>
+                        </div>
+                    </div>
+
+                    <!-- Jenis Pengurusan -->
+                    <div class="space-y-4">
+                        <div>
+                            <h3 class="text-lg font-semibold text-slate-800 mb-2 flex items-center">
+                                <i class="fas fa-file-alt mr-2 text-blue-500"></i>
+                                Jenis Pengurusan
+                            </h3>
+                            <p class="text-sm text-slate-600 mb-4">Pilih layanan yang ingin Anda urus (dapat memilih lebih dari satu)</p>
+                        </div>
+                        <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                            <label class="flex items-center space-x-3 p-3 rounded-lg border border-slate-200 hover:border-blue-300 hover:bg-blue-50 cursor-pointer transition-all duration-200 group">
+                                <input type="checkbox" name="jenis[]" value="KK" class="w-4 h-4 text-blue-600 border-slate-300 rounded focus:ring-blue-500">
+                                <div class="flex-1">
+                                    <span class="text-slate-800 font-medium text-sm group-hover:text-blue-700">Kartu Keluarga</span>
+                                    <div class="text-xs text-slate-500">(KK)</div>
+                                </div>
+                            </label>
+                            <label class="flex items-center space-x-3 p-3 rounded-lg border border-slate-200 hover:border-blue-300 hover:bg-blue-50 cursor-pointer transition-all duration-200 group">
+                                <input type="checkbox" name="jenis[]" value="KTP El" class="w-4 h-4 text-blue-600 border-slate-300 rounded focus:ring-blue-500">
+                                <div class="flex-1">
+                                    <span class="text-slate-800 font-medium text-sm group-hover:text-blue-700">KTP Elektronik</span>
+                                    <div class="text-xs text-slate-500">(e-KTP)</div>
+                                </div>
+                            </label>
+                            <label class="flex items-center space-x-3 p-3 rounded-lg border border-slate-200 hover:border-blue-300 hover:bg-blue-50 cursor-pointer transition-all duration-200 group">
+                                <input type="checkbox" name="jenis[]" value="KIA" class="w-4 h-4 text-blue-600 border-slate-300 rounded focus:ring-blue-500">
+                                <div class="flex-1">
+                                    <span class="text-slate-800 font-medium text-sm group-hover:text-blue-700">Kartu Identitas Anak</span>
+                                    <div class="text-xs text-slate-500">(KIA)</div>
+                                </div>
+                            </label>
+                            <label class="flex items-center space-x-3 p-3 rounded-lg border border-slate-200 hover:border-blue-300 hover:bg-blue-50 cursor-pointer transition-all duration-200 group">
+                                <input type="checkbox" name="jenis[]" value="SKPWNI" class="w-4 h-4 text-blue-600 border-slate-300 rounded focus:ring-blue-500">
+                                <div class="flex-1">
+                                    <span class="text-slate-800 font-medium text-sm group-hover:text-blue-700">SKPWNI</span>
+                                    <div class="text-xs text-slate-500">Surat Keterangan</div>
+                                </div>
+                            </label>
+                            <label class="flex items-center space-x-3 p-3 rounded-lg border border-slate-200 hover:border-blue-300 hover:bg-blue-50 cursor-pointer transition-all duration-200 group">
+                                <input type="checkbox" name="jenis[]" value="SKDWNI" class="w-4 h-4 text-blue-600 border-slate-300 rounded focus:ring-blue-500">
+                                <div class="flex-1">
+                                    <span class="text-slate-800 font-medium text-sm group-hover:text-blue-700">SKDWNI</span>
+                                    <div class="text-xs text-slate-500">Surat Keterangan</div>
+                                </div>
+                            </label>
+                            <label class="flex items-center space-x-3 p-3 rounded-lg border border-slate-200 hover:border-blue-300 hover:bg-blue-50 cursor-pointer transition-all duration-200 group">
+                                <input type="checkbox" name="jenis[]" value="Akta Kelahiran" class="w-4 h-4 text-blue-600 border-slate-300 rounded focus:ring-blue-500">
+                                <div class="flex-1">
+                                    <span class="text-slate-800 font-medium text-sm group-hover:text-blue-700">Akta Kelahiran</span>
+                                    <div class="text-xs text-slate-500">Dokumen Kelahiran</div>
+                                </div>
+                            </label>
+                            <label class="flex items-center space-x-3 p-3 rounded-lg border border-slate-200 hover:border-blue-300 hover:bg-blue-50 cursor-pointer transition-all duration-200 group">
+                                <input type="checkbox" name="jenis[]" value="Akta Kematian" class="w-4 h-4 text-blue-600 border-slate-300 rounded focus:ring-blue-500">
+                                <div class="flex-1">
+                                    <span class="text-slate-800 font-medium text-sm group-hover:text-blue-700">Akta Kematian</span>
+                                    <div class="text-xs text-slate-500">Dokumen Kematian</div>
+                                </div>
+                            </label>
+                            <label class="flex items-center space-x-3 p-3 rounded-lg border border-slate-200 hover:border-blue-300 hover:bg-blue-50 cursor-pointer transition-all duration-200 group">
+                                <input type="checkbox" name="jenis[]" value="Akta Perkawinan" class="w-4 h-4 text-blue-600 border-slate-300 rounded focus:ring-blue-500">
+                                <div class="flex-1">
+                                    <span class="text-slate-800 font-medium text-sm group-hover:text-blue-700">Akta Perkawinan</span>
+                                    <div class="text-xs text-slate-500">Dokumen Nikah</div>
+                                </div>
+                            </label>
+                            <label class="flex items-center space-x-3 p-3 rounded-lg border border-slate-200 hover:border-blue-300 hover:bg-blue-50 cursor-pointer transition-all duration-200 group">
+                                <input type="checkbox" name="jenis[]" value="Lainnya" class="w-4 h-4 text-blue-600 border-slate-300 rounded focus:ring-blue-500">
+                                <div class="flex-1">
+                                    <span class="text-slate-800 font-medium text-sm group-hover:text-blue-700">Lainnya</span>
+                                    <div class="text-xs text-slate-500">Layanan Lain</div>
+                                </div>
+                            </label>
+                        </div>
+                        <div class="error-message" id="jenisError">Pilih minimal satu jenis pengurusan</div>
+                    </div>
+
+                    <div class="pt-2">
+                        <button type="submit" 
+                                class="w-full bg-gradient-to-r from-blue-500 to-indigo-600 text-white py-4 rounded-lg font-semibold text-lg hover:from-blue-600 hover:to-indigo-700 transform hover:scale-[1.02] transition-all duration-200 shadow-lg hover:shadow-xl flex items-center justify-center space-x-2">
+                            <i class="fas fa-paper-plane text-lg"></i>
+                            <span>Kirim Formulir Antrian</span>
+                        </button>
+                        <p class="text-center text-sm text-slate-500 mt-3 flex items-center justify-center">
+                            <i class="fas fa-shield-alt mr-1"></i>
+                            Data Anda akan tersimpan dengan aman
+                        </p>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Check Tab -->
+            <div id="checkTab" class="tab-content p-6 md:p-8">
+                <div class="text-center mb-8">
+                    <div class="w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl flex items-center justify-center mx-auto mb-4 shadow-lg">
+                        <i class="fas fa-search text-2xl text-white"></i>
+                    </div>
+                    <h2 class="text-2xl md:text-3xl font-bold text-slate-800 mb-2">Cek Status Antrian</h2>
+                    <p class="text-slate-600">Masukkan NIK atau ID Antrian untuk melihat status</p>
+                    
+                    <!-- Sync Status -->
+                    <div id="syncStatus" class="mt-4 p-3 bg-blue-50 rounded-lg border border-blue-100">
+                        <div class="flex items-center justify-center space-x-2 text-sm">
+                            <i class="fas fa-sync-alt text-blue-500"></i>
+                            <span class="text-blue-600">Menghubungkan ke server...</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Column Mapping Info -->
+                    <div class="mt-4 p-3 bg-gray-50 rounded-lg border border-gray-200">
+                        <h4 class="text-sm font-medium text-gray-700 mb-2">Format Kolom Google Sheets:</h4>
+                        <div class="text-xs text-gray-600 space-y-1">
+                            <div>• Timestamp → Waktu pembuatan</div>
+                            <div>• ID_Unik → ID antrian unik</div>
+                            <div>• Nomor_Antrian → Nomor urut antrian</div>
+                            <div>• Tanggal_Kunjungan → Tanggal kunjungan</div>
+                            <div>• NIK → Nomor Induk Kependudukan</div>
+                            <div>• Nama_Lengkap → Nama lengkap pemohon</div>
+                            <div>• Kecamatan → Kecamatan asal</div>
+                            <div>• Desa → Desa asal</div>
+                            <div>• Jenis_Pengurusan → Layanan yang diminta</div>
+                            <div>• Status → Status antrian (active/completed)</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="max-w-md mx-auto space-y-4">
+                    <div class="space-y-2">
+                        <label for="searchInput" class="block text-sm font-medium text-slate-700">
+                            <i class="fas fa-search mr-2 text-green-500"></i>NIK atau ID Antrian
+                        </label>
+                        <input type="text" id="searchInput" 
+                               class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:border-green-500 focus:ring-2 focus:ring-green-100 focus:outline-none transition-all duration-200 bg-white"
+                               placeholder="Masukkan NIK (16 digit) atau ID Antrian">
+                    </div>
+                    <div class="grid grid-cols-2 gap-3">
+                        <button onclick="searchQueue()" 
+                                class="bg-gradient-to-r from-green-500 to-emerald-600 text-white py-3 rounded-lg font-semibold hover:from-green-600 hover:to-emerald-700 transition-all duration-200 shadow-lg flex items-center justify-center space-x-2">
+                            <i class="fas fa-search"></i>
+                            <span>Cari</span>
+                        </button>
+                        <button onclick="fetchSheetsData()" 
+                                class="bg-gradient-to-r from-blue-500 to-indigo-600 text-white py-3 rounded-lg font-semibold hover:from-blue-600 hover:to-indigo-700 transition-all duration-200 shadow-lg flex items-center justify-center space-x-2">
+                            <i class="fas fa-sync-alt"></i>
+                            <span>Refresh</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div id="searchResults" class="mt-8 hidden">
+                    <h3 class="text-lg font-semibold text-slate-800 mb-4">Hasil Pencarian:</h3>
+                    <div id="searchResultsContent"></div>
+                </div>
+            </div>
+
+            <!-- Stats Tab -->
+            <div id="statsTab" class="tab-content p-6 md:p-8">
+                <div class="text-center mb-8">
+                    <div class="w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-600 rounded-xl flex items-center justify-center mx-auto mb-4 shadow-lg">
+                        <i class="fas fa-chart-bar text-2xl text-white"></i>
+                    </div>
+                    <h2 class="text-2xl md:text-3xl font-bold text-slate-800 mb-2">Statistik Antrian</h2>
+                    <p class="text-slate-600">Lihat data antrian hari ini dan statistik layanan</p>
+                </div>
+
+                <div class="grid md:grid-cols-3 gap-6 mb-8">
+                    <div class="bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl p-6 text-white">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-blue-100 text-sm">Total Antrian Hari Ini</p>
+                                <p class="text-3xl font-bold" id="totalToday">0</p>
+                            </div>
+                            <i class="fas fa-users text-3xl text-blue-200"></i>
+                        </div>
+                    </div>
+                    <div class="bg-gradient-to-br from-green-500 to-green-600 rounded-xl p-6 text-white">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-green-100 text-sm">Antrian Aktif</p>
+                                <p class="text-3xl font-bold" id="activeQueues">0</p>
+                            </div>
+                            <i class="fas fa-clock text-3xl text-green-200"></i>
+                        </div>
+                    </div>
+                    <div class="bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl p-6 text-white">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-purple-100 text-sm">Layanan Terpopuler</p>
+                                <p class="text-lg font-bold" id="popularService">-</p>
+                            </div>
+                            <i class="fas fa-star text-3xl text-purple-200"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl border border-slate-200 p-6">
+                    <h3 class="text-lg font-semibold text-slate-800 mb-4">Antrian Hari Ini</h3>
+                    <div id="todayQueueList" class="space-y-3">
+                        <!-- Queue list will be populated here -->
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -496,121 +693,150 @@
 
         // Global variable to store current queue data
         let currentQueueData = null;
+        
+        // Google Sheets configuration
+        const GOOGLE_SHEETS_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQBHQp-HvkDh82aoj7E1tidYFqlLgIoVzZR9uYs7K1-_zXz9aOToYxvPjCEDqJ1IKbSxjmbgNJTpZRJ/pub?gid=0&single=true&output=csv';
+        let sheetsData = [];
+        let lastSyncTime = null;
 
-        // Queue management - Improved local storage system
-        function getTodayKey() {
-            return new Date().toISOString().split('T')[0]; // Format: YYYY-MM-DD
-        }
-        
-        // Get queue data from localStorage
-        function getQueueData() {
-            try {
-                const data = localStorage.getItem('queueData');
-                return data ? JSON.parse(data) : {};
-            } catch (error) {
-                console.error('Error parsing queue data:', error);
-                return {};
+        // CSV parsing function with improved handling
+        function parseCSV(csvText) {
+            const lines = csvText.trim().split('\n');
+            if (lines.length < 2) return [];
+            
+            // Parse headers and normalize them
+            const headerLine = lines[0];
+            const headers = [];
+            let current = '';
+            let inQuotes = false;
+            
+            for (let i = 0; i < headerLine.length; i++) {
+                const char = headerLine[i];
+                if (char === '"') {
+                    inQuotes = !inQuotes;
+                } else if (char === ',' && !inQuotes) {
+                    headers.push(current.trim().replace(/"/g, ''));
+                    current = '';
+                } else {
+                    current += char;
+                }
             }
-        }
-        
-        // Save queue data to localStorage
-        function saveQueueData(data) {
-            try {
-                localStorage.setItem('queueData', JSON.stringify(data));
-                return true;
-            } catch (error) {
-                console.error('Error saving queue data:', error);
-                return false;
-            }
-        }
-        
-        // Get next queue number for selected date
-        function getNextQueueNumber(selectedDate) {
-            const dateKey = selectedDate || getTodayKey();
-            const queueData = getQueueData();
+            headers.push(current.trim().replace(/"/g, ''));
             
-            // Initialize date if not exists
-            if (!queueData[dateKey]) {
-                queueData[dateKey] = {
-                    counter: 0,
-                    queues: []
-                };
-            }
+            const data = [];
             
-            // Increment counter
-            queueData[dateKey].counter++;
-            const nextNumber = queueData[dateKey].counter;
-            
-            // Save updated data
-            saveQueueData(queueData);
-            
-            console.log(`Nomor antrian untuk ${dateKey}: ${nextNumber}`);
-            return nextNumber;
-        }
-        
-        // Save queue item
-        function saveQueueItem(queueItem) {
-            const dateKey = queueItem.tanggal;
-            const queueData = getQueueData();
-            
-            // Initialize date if not exists
-            if (!queueData[dateKey]) {
-                queueData[dateKey] = {
-                    counter: parseInt(queueItem.nomor) || 1,
-                    queues: []
-                };
-            }
-            
-            // Add queue item
-            queueData[dateKey].queues.push(queueItem);
-            
-            // Save updated data
-            return saveQueueData(queueData);
-        }
-        
-        // Get all queues for a specific date
-        function getQueuesForDate(date) {
-            const queueData = getQueueData();
-            return queueData[date] ? queueData[date].queues : [];
-        }
-        
-        // Clean old data (keep only last 30 days)
-        function cleanOldData() {
-            try {
-                const queueData = getQueueData();
-                const today = new Date();
-                const thirtyDaysAgo = new Date(today.getTime() - (30 * 24 * 60 * 60 * 1000));
+            for (let i = 1; i < lines.length; i++) {
+                const values = [];
+                let current = '';
+                let inQuotes = false;
                 
-                Object.keys(queueData).forEach(dateKey => {
-                    const date = new Date(dateKey);
-                    if (date < thirtyDaysAgo) {
-                        delete queueData[dateKey];
+                for (let j = 0; j < lines[i].length; j++) {
+                    const char = lines[i][j];
+                    if (char === '"') {
+                        inQuotes = !inQuotes;
+                    } else if (char === ',' && !inQuotes) {
+                        values.push(current.trim().replace(/"/g, ''));
+                        current = '';
+                    } else {
+                        current += char;
                     }
-                });
+                }
+                values.push(current.trim().replace(/"/g, ''));
                 
-                saveQueueData(queueData);
-            } catch (error) {
-                console.error('Error cleaning old data:', error);
+                if (values.length >= headers.length - 1) { // Allow for slight variations
+                    const row = {};
+                    headers.forEach((header, index) => {
+                        row[header] = values[index] || '';
+                    });
+                    data.push(row);
+                }
             }
-        }
-        
-        // Generate unique ID for queue
-        function generateUniqueId() {
-            const today = getTodayKey().replace(/-/g, '');
-            const timestamp = Date.now().toString().slice(-6);
-            const random = Math.random().toString(36).substr(2, 4).toUpperCase();
-            return `TNB${today}${timestamp}${random}`;
+            
+            return data;
         }
 
-        // DOM elements
-        const kecamatanSelect = document.getElementById('kecamatan');
-        const desaSelect = document.getElementById('desa');
-        const queueForm = document.getElementById('queueForm');
-        const successModal = document.getElementById('successModal');
+        // Fetch data from Google Sheets
+        async function fetchSheetsData() {
+            try {
+                showSyncStatus('Sinkronisasi data...', 'loading');
+                
+                const response = await fetch(GOOGLE_SHEETS_URL);
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                const csvText = await response.text();
+                const data = parseCSV(csvText);
+                
+                // Transform data to match our format with exact column mapping
+                sheetsData = data.map(row => {
+                    // Map exact column names from Google Sheets
+                    const jenisString = row['Jenis_Pengurusan'] || row['Jenis Pengurusan'] || row.jenis || '';
+                    const jenisArray = jenisString ? jenisString.split(',').map(j => j.trim()).filter(j => j) : [];
+                    
+                    return {
+                        id: row.ID || Date.now() + Math.random(),
+                        uniqueId: row['ID_Unik'] || row['ID Unik'] || row['ID Antrian'] || row.uniqueId || generateUniqueId(),
+                        tanggal: row['Tanggal_Kunjungan'] || row['Tanggal Kunjungan'] || row.Tanggal || row.tanggal || '',
+                        nik: row.NIK || row.nik || '',
+                        nama: row['Nama_Lengkap'] || row['Nama Lengkap'] || row.Nama || row.nama || '',
+                        kecamatan: row.Kecamatan || row.kecamatan || '',
+                        desa: row.Desa || row.desa || '',
+                        jenis: jenisArray,
+                        nomor: row['Nomor_Antrian'] || row['Nomor Antrian'] || row.nomor || '001',
+                        timestamp: row.Timestamp || row.timestamp || new Date().toISOString(),
+                        status: row.Status || row.status || 'active'
+                    };
+                }).filter(item => item.nik && item.nama); // Filter valid entries
+                
+                lastSyncTime = new Date();
+                
+                // Debug: Log column headers for troubleshooting
+                if (data.length > 0) {
+                    console.log('Available columns:', Object.keys(data[0]));
+                    console.log('Sample data:', data[0]);
+                }
+                
+                showSyncStatus(`Berhasil sinkronisasi ${sheetsData.length} data`, 'success');
+                
+                return sheetsData;
+                
+            } catch (error) {
+                console.error('Error fetching sheets data:', error);
+                showSyncStatus('Gagal sinkronisasi: ' + error.message, 'error');
+                return [];
+            }
+        }
+
+        // Show sync status
+        function showSyncStatus(message, type) {
+            const statusElement = document.getElementById('syncStatus');
+            if (statusElement) {
+                statusElement.innerHTML = `
+                    <div class="flex items-center space-x-2 text-sm">
+                        ${type === 'loading' ? '<i class="fas fa-spinner fa-spin text-blue-500"></i>' : 
+                          type === 'success' ? '<i class="fas fa-check-circle text-green-500"></i>' : 
+                          '<i class="fas fa-exclamation-circle text-red-500"></i>'}
+                        <span class="${type === 'success' ? 'text-green-600' : type === 'error' ? 'text-red-600' : 'text-blue-600'}">${message}</span>
+                        ${lastSyncTime ? `<span class="text-slate-400">• ${lastSyncTime.toLocaleTimeString('id-ID')}</span>` : ''}
+                    </div>
+                `;
+            }
+        }
 
         // Initialize
         document.addEventListener('DOMContentLoaded', function() {
+            updateDateTime();
+            setInterval(updateDateTime, 1000);
             updateDesaOptions();
+            loadStatistics();
+            cleanupOldData();
+            
+            // Initial data fetch
+            fetchSheetsData();
+            
+            // Auto-sync every 30 seconds
+            setInterval(fetchSheetsData, 30000);
             
             // Set minimum date to today and maximum to 30 days ahead
             const today = new Date();
@@ -624,9 +850,262 @@
             tanggalInput.value = todayStr; // Set default to today
         });
 
+        // Cleanup old data (older than 30 days)
+        function cleanupOldData() {
+            try {
+                const queueData = getQueueData();
+                const thirtyDaysAgo = new Date();
+                thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+                const cutoffDate = thirtyDaysAgo.toISOString().split('T')[0];
+                
+                let hasChanges = false;
+                Object.keys(queueData).forEach(dateKey => {
+                    if (dateKey < cutoffDate) {
+                        delete queueData[dateKey];
+                        hasChanges = true;
+                    }
+                });
+                
+                if (hasChanges) {
+                    saveQueueData(queueData);
+                    console.log('Old queue data cleaned up');
+                }
+            } catch (error) {
+                console.warn('Error during data cleanup:', error);
+            }
+        }
+
+        // Update date and time
+        function updateDateTime() {
+            const now = new Date();
+            const dateOptions = { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            };
+            const timeOptions = { 
+                hour: '2-digit', 
+                minute: '2-digit', 
+                second: '2-digit',
+                timeZone: 'Asia/Jayapura'
+            };
+            
+            document.getElementById('currentDate').textContent = now.toLocaleDateString('id-ID', dateOptions);
+            document.getElementById('currentTime').textContent = now.toLocaleTimeString('id-ID', timeOptions) + ' WITA';
+        }
+
+        // Tab switching
+        function switchTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Remove active class from all nav tabs
+            document.querySelectorAll('.nav-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Show selected tab
+            document.getElementById(tabName + 'Tab').classList.add('active');
+            
+            // Add active class to clicked nav tab
+            event.target.classList.add('active');
+            
+            // Load data for specific tabs
+            if (tabName === 'stats') {
+                loadStatistics();
+            } else if (tabName === 'check') {
+                // Refresh sync status when switching to check tab
+                fetchSheetsData();
+            }
+        }
+
+        // Queue management functions
+        function getTodayKey() {
+            return new Date().toISOString().split('T')[0];
+        }
+        
+        function getQueueData() {
+            try {
+                if (typeof Storage === 'undefined') {
+                    console.warn('localStorage not supported');
+                    return {};
+                }
+                const data = localStorage.getItem('queueData');
+                return data ? JSON.parse(data) : {};
+            } catch (error) {
+                console.error('Error parsing queue data:', error);
+                // Try to recover by clearing corrupted data
+                try {
+                    localStorage.removeItem('queueData');
+                } catch (e) {
+                    console.error('Failed to clear corrupted data:', e);
+                }
+                return {};
+            }
+        }
+        
+        function saveQueueData(data) {
+            try {
+                if (typeof Storage === 'undefined') {
+                    console.warn('localStorage not supported');
+                    return false;
+                }
+                
+                const dataString = JSON.stringify(data);
+                
+                // Check if we're approaching localStorage limit
+                if (dataString.length > 4000000) { // ~4MB limit check
+                    console.warn('Data size approaching localStorage limit');
+                    // Auto cleanup if data is too large
+                    cleanupOldData();
+                }
+                
+                localStorage.setItem('queueData', dataString);
+                return true;
+            } catch (error) {
+                console.error('Error saving queue data:', error);
+                
+                // Handle quota exceeded error
+                if (error.name === 'QuotaExceededError' || error.name === 'NS_ERROR_DOM_QUOTA_REACHED') {
+                    console.warn('localStorage quota exceeded, attempting cleanup');
+                    try {
+                        cleanupOldData();
+                        localStorage.setItem('queueData', JSON.stringify(data));
+                        return true;
+                    } catch (retryError) {
+                        console.error('Failed to save even after cleanup:', retryError);
+                        showAlert('Penyimpanan penuh! Beberapa data lama telah dihapus.', 'warning');
+                    }
+                }
+                return false;
+            }
+        }
+        
+        function getNextQueueNumber(selectedDate) {
+            const dateKey = selectedDate || getTodayKey();
+            const queueData = getQueueData();
+            
+            if (!queueData[dateKey]) {
+                queueData[dateKey] = {
+                    counter: 0,
+                    queues: []
+                };
+            }
+            
+            queueData[dateKey].counter++;
+            const nextNumber = queueData[dateKey].counter;
+            
+            saveQueueData(queueData);
+            return nextNumber;
+        }
+        
+        function saveQueueItem(queueItem) {
+            const dateKey = queueItem.tanggal;
+            const queueData = getQueueData();
+            
+            if (!queueData[dateKey]) {
+                queueData[dateKey] = {
+                    counter: parseInt(queueItem.nomor) || 1,
+                    queues: []
+                };
+            }
+            
+            queueData[dateKey].queues.push(queueItem);
+            return saveQueueData(queueData);
+        }
+        
+        function getQueuesForDate(date) {
+            const queueData = getQueueData();
+            return queueData[date] ? queueData[date].queues : [];
+        }
+        
+        function generateUniqueId() {
+            const today = getTodayKey().replace(/-/g, '');
+            const timestamp = Date.now().toString().slice(-6);
+            const random = Math.random().toString(36).substr(2, 4).toUpperCase();
+            return `TNB${today}${timestamp}${random}`;
+        }
+
+        // Validation functions
+        function validateNIK(nik) {
+            const nikRegex = /^[0-9]{16}$/;
+            return nikRegex.test(nik);
+        }
+
+        function validateNama(nama) {
+            return nama && nama.trim().length >= 2;
+        }
+
+        function validateDesaKecamatan(kecamatan, desa) {
+            if (!kecamatan || !desa) return false;
+            const validDesas = desaData[kecamatan] || [];
+            return validDesas.includes(desa);
+        }
+
+        function showFieldError(fieldId, message) {
+            const field = document.getElementById(fieldId);
+            const errorElement = document.getElementById(fieldId + 'Error');
+            
+            field.classList.add('input-error');
+            errorElement.textContent = message;
+            errorElement.classList.add('show');
+        }
+
+        function hideFieldError(fieldId) {
+            const field = document.getElementById(fieldId);
+            const errorElement = document.getElementById(fieldId + 'Error');
+            
+            field.classList.remove('input-error');
+            errorElement.classList.remove('show');
+        }
+
+        function clearAllErrors() {
+            const errorElements = document.querySelectorAll('.error-message');
+            const inputElements = document.querySelectorAll('.input-error');
+            
+            errorElements.forEach(el => el.classList.remove('show'));
+            inputElements.forEach(el => el.classList.remove('input-error'));
+        }
+
+        // DOM elements
+        const kecamatanSelect = document.getElementById('kecamatan');
+        const desaSelect = document.getElementById('desa');
+        const queueForm = document.getElementById('queueForm');
+        const successModal = document.getElementById('successModal');
+
         // Handle kecamatan change
         kecamatanSelect.addEventListener('change', function() {
             updateDesaOptions();
+            hideFieldError('kecamatan');
+            hideFieldError('desa');
+        });
+
+        // Handle desa change
+        desaSelect.addEventListener('change', function() {
+            hideFieldError('desa');
+        });
+
+        // Handle NIK input
+        document.getElementById('nik').addEventListener('input', function(e) {
+            e.target.value = e.target.value.replace(/\D/g, '');
+            if (e.target.value.length > 0) {
+                hideFieldError('nik');
+            }
+        });
+
+        // Handle nama input
+        document.getElementById('nama').addEventListener('input', function(e) {
+            if (e.target.value.trim().length >= 2) {
+                hideFieldError('nama');
+            }
+        });
+
+        // Handle tanggal change
+        document.getElementById('tanggal').addEventListener('change', function(e) {
+            hideFieldError('tanggal');
         });
 
         function updateDesaOptions() {
@@ -644,48 +1123,71 @@
             });
         }
 
-        // Google Apps Script URL - Sudah terhubung ke database
-        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxArSslEnmrlQ9N2LFxuXglohlbwi7pmiBKwdSrzIt-k7Q77Ly8WZujGvbZv4nXaQIA/exec';
-
         // Handle form submission
         queueForm.addEventListener('submit', function(e) {
             e.preventDefault();
             
+            clearAllErrors();
+            
             const formData = new FormData(queueForm);
             const jenisArray = formData.getAll('jenis[]');
-            const selectedDate = new Date(formData.get('tanggal'));
-            const today = new Date();
-            today.setHours(0, 0, 0, 0);
+            let hasError = false;
             
-            // Validation
-            if (jenisArray.length === 0) {
-                showAlert('Silakan pilih minimal satu jenis pengurusan!', 'warning');
-                return;
-            }
-            
-            if (selectedDate < today) {
-                showAlert('Tanggal kunjungan tidak boleh kurang dari hari ini!', 'error');
-                return;
+            // Validate tanggal
+            const tanggal = formData.get('tanggal');
+            if (!tanggal) {
+                showFieldError('tanggal', 'Tanggal kunjungan harus dipilih');
+                hasError = true;
+            } else {
+                const selectedDate = new Date(tanggal);
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+                
+                if (selectedDate < today) {
+                    showFieldError('tanggal', 'Tanggal kunjungan tidak boleh kurang dari hari ini');
+                    hasError = true;
+                }
             }
             
             // Validate NIK
             const nik = formData.get('nik');
-            if (nik.length !== 16) {
-                showAlert('NIK harus 16 digit!', 'error');
-                return;
+            if (!validateNIK(nik)) {
+                showFieldError('nik', 'NIK harus 16 digit angka');
+                hasError = true;
             }
             
-            // Validate Kecamatan
+            // Validate nama
+            const nama = formData.get('nama');
+            if (!validateNama(nama)) {
+                showFieldError('nama', 'Nama lengkap harus diisi minimal 2 karakter');
+                hasError = true;
+            }
+            
+            // Validate kecamatan
             const kecamatan = formData.get('kecamatan');
             if (!kecamatan) {
-                showAlert('Silakan pilih kecamatan!', 'warning');
-                return;
+                showFieldError('kecamatan', 'Kecamatan harus dipilih');
+                hasError = true;
             }
             
-            // Validate Desa
+            // Validate desa
             const desa = formData.get('desa');
             if (!desa) {
-                showAlert('Silakan pilih desa!', 'warning');
+                showFieldError('desa', 'Desa harus dipilih');
+                hasError = true;
+            } else if (!validateDesaKecamatan(kecamatan, desa)) {
+                showFieldError('desa', 'Desa tidak sesuai dengan kecamatan yang dipilih');
+                hasError = true;
+            }
+            
+            // Validate jenis pengurusan
+            if (jenisArray.length === 0) {
+                showFieldError('jenis', 'Pilih minimal satu jenis pengurusan');
+                hasError = true;
+            }
+            
+            if (hasError) {
+                showAlert('Mohon perbaiki kesalahan pada formulir!', 'error');
                 return;
             }
             
@@ -696,10 +1198,6 @@
             submitButton.disabled = true;
             
             try {
-                // Clean old data first
-                cleanOldData();
-                
-                // Get next queue number
                 const queueNumber = getNextQueueNumber(formData.get('tanggal'));
                 const uniqueId = generateUniqueId();
                 
@@ -717,29 +1215,27 @@
                     status: 'active'
                 };
                 
-                console.log('Membuat antrian dengan nomor:', queueItem.nomor);
-                
-                // Save queue item locally
                 const saved = saveQueueItem(queueItem);
                 
                 if (!saved) {
                     throw new Error('Gagal menyimpan data antrian');
                 }
                 
-                // Store current queue data for detail view
                 currentQueueData = queueItem;
                 
-                // Show success modal
                 document.getElementById('queueNumber').textContent = queueItem.nomor;
                 successModal.classList.remove('hidden');
                 
-                // Reset form
                 queueForm.reset();
                 updateDesaOptions();
                 
-                // Reset to today's date
                 const todayReset = new Date().toISOString().split('T')[0];
                 document.getElementById('tanggal').value = todayReset;
+                
+                // Auto-sync after creating new queue
+                setTimeout(() => {
+                    fetchSheetsData();
+                }, 2000);
                 
                 showAlert('Antrian berhasil dibuat!', 'success');
                 
@@ -747,15 +1243,221 @@
                 console.error('Error dalam proses pembuatan antrian:', error);
                 showAlert('Terjadi kesalahan: ' + error.message, 'error');
             } finally {
-                // Reset button state
                 submitButton.innerHTML = originalText;
                 submitButton.disabled = false;
             }
         });
 
+        // Search queue function (now includes Google Sheets data)
+        async function searchQueue() {
+            const searchInput = document.getElementById('searchInput').value.trim();
+            const searchResults = document.getElementById('searchResults');
+            const searchResultsContent = document.getElementById('searchResultsContent');
+            
+            if (!searchInput) {
+                showAlert('Masukkan NIK atau ID Antrian untuk mencari!', 'warning');
+                return;
+            }
+            
+            // Show loading state
+            searchResultsContent.innerHTML = `
+                <div class="text-center py-8">
+                    <i class="fas fa-spinner fa-spin text-4xl text-blue-500 mb-4"></i>
+                    <p class="text-slate-600">Mencari data antrian...</p>
+                </div>
+            `;
+            searchResults.classList.remove('hidden');
+            
+            // Refresh data from Google Sheets
+            await fetchSheetsData();
+            
+            let foundQueues = [];
+            
+            // Search in Google Sheets data first
+            sheetsData.forEach(queue => {
+                if (queue.nik === searchInput || queue.uniqueId === searchInput) {
+                    foundQueues.push({...queue, source: 'sheets'});
+                }
+            });
+            
+            // Also search in local data
+            const queueData = getQueueData();
+            Object.keys(queueData).forEach(dateKey => {
+                const queues = queueData[dateKey].queues || [];
+                queues.forEach(queue => {
+                    // Avoid duplicates
+                    const exists = foundQueues.some(fq => fq.nik === queue.nik && fq.uniqueId === queue.uniqueId);
+                    if (!exists && (queue.nik === searchInput || queue.uniqueId === searchInput)) {
+                        foundQueues.push({...queue, source: 'local'});
+                    }
+                });
+            });
+            
+            if (foundQueues.length === 0) {
+                searchResultsContent.innerHTML = `
+                    <div class="text-center py-8">
+                        <i class="fas fa-search text-4xl text-slate-300 mb-4"></i>
+                        <p class="text-slate-500">Tidak ada antrian ditemukan dengan NIK atau ID tersebut.</p>
+                        <p class="text-xs text-slate-400 mt-2">Data telah disinkronisasi dengan server</p>
+                    </div>
+                `;
+            } else {
+                searchResultsContent.innerHTML = foundQueues.map(queue => `
+                    <div class="bg-white border border-slate-200 rounded-lg p-4 hover:shadow-md transition-all duration-200">
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                                    <span class="text-blue-600 font-bold text-lg">${queue.nomor}</span>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-slate-800">${queue.nama}</h4>
+                                    <p class="text-sm text-slate-500">NIK: ${queue.nik}</p>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-sm font-medium text-slate-700">${queue.tanggal ? new Date(queue.tanggal).toLocaleDateString('id-ID') : 'Tidak tersedia'}</p>
+                                <div class="flex items-center space-x-2">
+                                    <span class="inline-block px-2 py-1 text-xs rounded-full bg-green-100 text-green-800">Aktif</span>
+                                    ${queue.source === 'sheets' ? '<span class="inline-block px-2 py-1 text-xs rounded-full bg-blue-100 text-blue-800">Server</span>' : '<span class="inline-block px-2 py-1 text-xs rounded-full bg-gray-100 text-gray-800">Lokal</span>'}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <p class="text-sm text-slate-600 mb-1">Alamat: ${queue.desa || 'Tidak tersedia'}, ${queue.kecamatan || 'Tidak tersedia'}</p>
+                            <p class="text-sm text-slate-600">ID: ${queue.uniqueId}</p>
+                        </div>
+                        <div class="mb-3">
+                            <p class="text-sm font-medium text-slate-700 mb-2">Jenis Pengurusan:</p>
+                            <div class="flex flex-wrap gap-1">
+                                ${Array.isArray(queue.jenis) ? queue.jenis.map(jenis => `<span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">${jenis}</span>`).join('') : '<span class="px-2 py-1 bg-gray-100 text-gray-800 text-xs rounded-full">Tidak tersedia</span>'}
+                            </div>
+                        </div>
+                        <button onclick="showQueueDetailFromSearch('${queue.uniqueId}')" 
+                                class="w-full bg-blue-500 text-white py-2 rounded-lg text-sm font-medium hover:bg-blue-600 transition-colors duration-200">
+                            Lihat Detail & Cetak
+                        </button>
+                    </div>
+                `).join('');
+            }
+        }
+
+        // Show queue detail from search (now includes Google Sheets data)
+        function showQueueDetailFromSearch(uniqueId) {
+            let foundQueue = null;
+            
+            // First check in Google Sheets data
+            foundQueue = sheetsData.find(q => q.uniqueId === uniqueId);
+            
+            // If not found, check in local data
+            if (!foundQueue) {
+                const queueData = getQueueData();
+                Object.keys(queueData).forEach(dateKey => {
+                    const queues = queueData[dateKey].queues || [];
+                    const queue = queues.find(q => q.uniqueId === uniqueId);
+                    if (queue) {
+                        foundQueue = queue;
+                    }
+                });
+            }
+            
+            if (foundQueue) {
+                currentQueueData = foundQueue;
+                showQueueDetail();
+            } else {
+                showAlert('Data antrian tidak ditemukan!', 'error');
+            }
+        }
+
+        // Load statistics (now includes Google Sheets data)
+        async function loadStatistics() {
+            // Show loading state
+            document.getElementById('totalToday').textContent = '...';
+            document.getElementById('activeQueues').textContent = '...';
+            document.getElementById('popularService').textContent = 'Memuat...';
+            
+            // Refresh data from Google Sheets
+            await fetchSheetsData();
+            
+            const today = getTodayKey();
+            const localTodayQueues = getQueuesForDate(today);
+            
+            // Combine local and sheets data for today
+            const sheetsTodayQueues = sheetsData.filter(queue => queue.tanggal === today);
+            
+            // Merge and deduplicate
+            const allTodayQueues = [...localTodayQueues];
+            sheetsTodayQueues.forEach(sheetsQueue => {
+                const exists = allTodayQueues.some(localQueue => 
+                    localQueue.nik === sheetsQueue.nik && localQueue.uniqueId === sheetsQueue.uniqueId
+                );
+                if (!exists) {
+                    allTodayQueues.push(sheetsQueue);
+                }
+            });
+            
+            // Update statistics
+            document.getElementById('totalToday').textContent = allTodayQueues.length;
+            document.getElementById('activeQueues').textContent = allTodayQueues.filter(q => q.status === 'active').length;
+            
+            // Calculate popular service
+            const serviceCount = {};
+            allTodayQueues.forEach(queue => {
+                if (Array.isArray(queue.jenis)) {
+                    queue.jenis.forEach(jenis => {
+                        if (jenis && jenis.trim()) {
+                            serviceCount[jenis] = (serviceCount[jenis] || 0) + 1;
+                        }
+                    });
+                }
+            });
+            
+            const popularService = Object.keys(serviceCount).length > 0 ? 
+                Object.keys(serviceCount).reduce((a, b) => 
+                    serviceCount[a] > serviceCount[b] ? a : b
+                ) : 'Tidak ada';
+            
+            document.getElementById('popularService').textContent = popularService;
+            
+            // Update today's queue list
+            const todayQueueList = document.getElementById('todayQueueList');
+            
+            if (allTodayQueues.length === 0) {
+                todayQueueList.innerHTML = `
+                    <div class="text-center py-8">
+                        <i class="fas fa-calendar-times text-4xl text-slate-300 mb-4"></i>
+                        <p class="text-slate-500">Belum ada antrian hari ini.</p>
+                        <p class="text-xs text-slate-400 mt-2">Data telah disinkronisasi dengan server</p>
+                    </div>
+                `;
+            } else {
+                todayQueueList.innerHTML = allTodayQueues.map(queue => {
+                    const isFromSheets = sheetsData.some(sq => sq.uniqueId === queue.uniqueId);
+                    return `
+                        <div class="flex items-center justify-between p-3 bg-slate-50 rounded-lg hover:bg-slate-100 transition-colors duration-200">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                                    <span class="text-blue-600 font-bold">${queue.nomor}</span>
+                                </div>
+                                <div>
+                                    <p class="font-medium text-slate-800">${queue.nama}</p>
+                                    <p class="text-sm text-slate-500">${queue.desa || 'Tidak tersedia'}, ${queue.kecamatan || 'Tidak tersedia'}</p>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-sm text-slate-600">${Array.isArray(queue.jenis) ? queue.jenis.join(', ') : 'Tidak tersedia'}</p>
+                                <div class="flex items-center space-x-1">
+                                    <span class="inline-block px-2 py-1 text-xs rounded-full bg-green-100 text-green-800">Aktif</span>
+                                    ${isFromSheets ? '<span class="inline-block px-2 py-1 text-xs rounded-full bg-blue-100 text-blue-800">Server</span>' : '<span class="inline-block px-2 py-1 text-xs rounded-full bg-gray-100 text-gray-800">Lokal</span>'}
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            }
+        }
+
         // Alert system
         function showAlert(message, type = 'info') {
-            // Remove existing alerts
             const existingAlerts = document.querySelectorAll('.custom-alert');
             existingAlerts.forEach(alert => alert.remove());
             
@@ -798,12 +1500,10 @@
             
             document.body.appendChild(alertDiv);
             
-            // Animate in
             setTimeout(() => {
                 alertDiv.classList.remove('translate-x-full');
             }, 100);
             
-            // Auto remove after 5 seconds
             setTimeout(() => {
                 if (document.body.contains(alertDiv)) {
                     alertDiv.classList.add('translate-x-full');
@@ -821,25 +1521,14 @@
             successModal.classList.add('hidden');
         });
 
-
-
-        // NIK validation
-        document.getElementById('nik').addEventListener('input', function(e) {
-            e.target.value = e.target.value.replace(/\D/g, '');
-        });
-
         // Show queue detail
         function showQueueDetail() {
-            console.log('showQueueDetail called, currentQueueData:', currentQueueData);
-            
             if (!currentQueueData) {
-                console.error('currentQueueData is null or undefined');
                 alert('Data antrian tidak tersedia! Silakan isi formulir terlebih dahulu.');
                 return;
             }
             
             try {
-                // Populate detail modal with error checking
                 const elements = {
                     'detailQueueNumber': currentQueueData.nomor || '000',
                     'detailDate': new Date().toLocaleDateString('id-ID'),
@@ -851,38 +1540,24 @@
                     'printTime': new Date().toLocaleString('id-ID')
                 };
                 
-                // Update each element safely
                 Object.keys(elements).forEach(id => {
                     const element = document.getElementById(id);
                     if (element) {
                         element.textContent = elements[id];
-                        console.log(`Updated ${id}:`, elements[id]);
-                    } else {
-                        console.error(`Element with id ${id} not found`);
                     }
                 });
                 
-                // Populate services
                 const jenisContainer = document.getElementById('detailJenis');
                 if (jenisContainer && currentQueueData.jenis && Array.isArray(currentQueueData.jenis)) {
                     jenisContainer.innerHTML = currentQueueData.jenis.map(jenis => 
                         `<div class="bg-blue-100 text-blue-800 px-3 py-2 rounded-lg text-sm font-medium">${jenis}</div>`
                     ).join('');
-                    console.log('Services populated:', currentQueueData.jenis);
-                } else {
-                    console.error('jenisContainer not found or jenis data invalid');
-                    if (jenisContainer) {
-                        jenisContainer.innerHTML = '<div class="text-slate-500 text-sm">Tidak ada layanan dipilih</div>';
-                    }
                 }
                 
-                // Generate QR Code
                 generateQRCode();
                 
-                // Show modal
                 document.getElementById('successModal').classList.add('hidden');
                 document.getElementById('detailModal').classList.remove('hidden');
-                console.log('Detail modal shown successfully');
                 
             } catch (error) {
                 console.error('Error in showQueueDetail:', error);
@@ -890,58 +1565,67 @@
             }
         }
         
-        // Separate QR Code generation function
         function generateQRCode() {
             const qrContainer = document.getElementById('qrcode');
-            if (!qrContainer) {
-                console.error('QR code container not found');
-                return;
-            }
+            if (!qrContainer) return;
             
-            qrContainer.innerHTML = ''; // Clear previous QR code
+            qrContainer.innerHTML = '';
             
-            const qrData = JSON.stringify({
-                id: currentQueueData.uniqueId || 'unknown',
-                nomor: currentQueueData.nomor || '000',
-                nama: currentQueueData.nama || 'Unknown',
-                tanggal: currentQueueData.tanggal || new Date().toISOString().split('T')[0],
-                timestamp: currentQueueData.timestamp || new Date().toISOString()
-            });
-            
-            // Create canvas element for QR code
-            const canvas = document.createElement('canvas');
-            qrContainer.appendChild(canvas);
-            
-            // Generate QR Code with error handling
-            if (typeof QRCode !== 'undefined') {
-                QRCode.toCanvas(canvas, qrData, {
-                    width: 120,
-                    height: 120,
-                    margin: 2,
-                    color: {
-                        dark: '#1e293b',
-                        light: '#ffffff'
-                    }
-                }, function (error) {
-                    if (error) {
-                        console.error('QR Code generation error:', error);
-                        qrContainer.innerHTML = '<div class="text-red-500 text-sm p-4 border border-red-200 rounded">QR Code gagal dibuat</div>';
-                    } else {
-                        console.log('QR Code generated successfully');
-                    }
+            try {
+                const qrData = JSON.stringify({
+                    id: currentQueueData.uniqueId || 'unknown',
+                    nomor: currentQueueData.nomor || '000',
+                    nama: currentQueueData.nama || 'Unknown',
+                    tanggal: currentQueueData.tanggal || new Date().toISOString().split('T')[0],
+                    timestamp: currentQueueData.timestamp || new Date().toISOString()
                 });
-            } else {
-                console.error('QRCode library not loaded');
-                qrContainer.innerHTML = '<div class="text-slate-500 text-sm p-4 border border-slate-200 rounded">QR Code tidak tersedia</div>';
+                
+                // Fallback QR code display
+                const fallbackQR = `
+                    <div class="w-32 h-32 bg-slate-100 border-2 border-slate-300 rounded-lg flex flex-col items-center justify-center text-center p-2">
+                        <i class="fas fa-qrcode text-3xl text-slate-400 mb-2"></i>
+                        <div class="text-xs text-slate-600 font-mono break-all">${currentQueueData.uniqueId || 'ID-ANTRIAN'}</div>
+                    </div>
+                `;
+                
+                if (typeof QRCode !== 'undefined' && QRCode.toCanvas) {
+                    const canvas = document.createElement('canvas');
+                    qrContainer.appendChild(canvas);
+                    
+                    QRCode.toCanvas(canvas, qrData, {
+                        width: 120,
+                        height: 120,
+                        margin: 2,
+                        color: {
+                            dark: '#1e293b',
+                            light: '#ffffff'
+                        },
+                        errorCorrectionLevel: 'M'
+                    }, function (error) {
+                        if (error) {
+                            console.warn('QR Code generation failed:', error);
+                            qrContainer.innerHTML = fallbackQR;
+                        }
+                    });
+                } else {
+                    console.warn('QR Code library not available, using fallback');
+                    qrContainer.innerHTML = fallbackQR;
+                }
+            } catch (error) {
+                console.error('Error in generateQRCode:', error);
+                qrContainer.innerHTML = `
+                    <div class="w-32 h-32 bg-slate-100 border-2 border-slate-300 rounded-lg flex flex-col items-center justify-center text-center p-2">
+                        <i class="fas fa-qrcode text-3xl text-slate-400 mb-2"></i>
+                        <div class="text-xs text-slate-600">QR Code</div>
+                    </div>
+                `;
             }
         }
         
-        // Close detail modal
         function closeDetailModal() {
             document.getElementById('detailModal').classList.add('hidden');
         }
         
-        // Print ticket - Improved version
         function printTicket() {
             if (!currentQueueData) {
                 showAlert('Data antrian tidak tersedia!', 'error');
@@ -949,244 +1633,145 @@
             }
             
             try {
-                // Create a new window for printing
-                const printWindow = window.open('', '_blank', 'width=800,height=600,scrollbars=yes,resizable=yes');
-                
-                if (!printWindow) {
-                    showAlert('Pop-up diblokir! Silakan izinkan pop-up untuk mencetak.', 'warning');
-                    return;
-                }
-                
-                // Get the print area content
+                // Create a temporary print-friendly version
                 const printArea = document.getElementById('printArea');
                 if (!printArea) {
                     showAlert('Area cetak tidak ditemukan!', 'error');
                     return;
                 }
                 
-                const printContent = printArea.innerHTML;
+                // Clone the print area
+                const printContent = printArea.cloneNode(true);
                 
-                // Create complete HTML for print window
-                const printHTML = `
-                    <!DOCTYPE html>
-                    <html>
-                    <head>
-                        <meta charset="UTF-8">
-                        <title>Bukti Antrian - ${currentQueueData.nama || 'Unknown'}</title>
-                        <style>
+                // Create print styles
+                const printStyles = `
+                    <style>
+                        @media print {
                             * {
-                                margin: 0;
-                                padding: 0;
-                                box-sizing: border-box;
+                                -webkit-print-color-adjust: exact !important;
+                                color-adjust: exact !important;
                             }
                             
                             body {
-                                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-                                line-height: 1.6;
-                                color: #333;
-                                background: white;
+                                margin: 0;
                                 padding: 20px;
+                                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                                font-size: 12px;
+                                line-height: 1.4;
+                                color: #000;
+                                background: white;
                             }
                             
                             .print-area {
-                                max-width: 800px;
-                                margin: 0 auto;
+                                max-width: none;
+                                margin: 0;
+                                padding: 0;
+                                border: none;
+                                box-shadow: none;
                                 background: white;
-                                padding: 30px;
-                                border: 2px solid #e2e8f0;
-                                border-radius: 12px;
-                            }
-                            
-                            h2, h3 {
-                                color: #1e293b;
-                                margin-bottom: 10px;
                             }
                             
                             .text-center { text-align: center; }
-                            .text-left { text-align: left; }
                             .font-bold { font-weight: bold; }
-                            .text-lg { font-size: 1.125rem; }
-                            .text-xl { font-size: 1.25rem; }
-                            .text-sm { font-size: 0.875rem; }
-                            .text-xs { font-size: 0.75rem; }
-                            .text-4xl { font-size: 2.25rem; }
-                            .text-5xl { font-size: 3rem; }
-                            .mb-2 { margin-bottom: 0.5rem; }
-                            .mb-3 { margin-bottom: 0.75rem; }
-                            .mb-4 { margin-bottom: 1rem; }
-                            .mb-6 { margin-bottom: 1.5rem; }
-                            .mt-2 { margin-top: 0.5rem; }
-                            .p-3 { padding: 0.75rem; }
-                            .px-3 { padding-left: 0.75rem; padding-right: 0.75rem; }
-                            .py-2 { padding-top: 0.5rem; padding-bottom: 0.5rem; }
-                            .pb-4 { padding-bottom: 1rem; }
-                            .pt-4 { padding-top: 1rem; }
+                            .text-4xl, .text-5xl { font-size: 36px; font-weight: bold; }
+                            .text-xl { font-size: 18px; }
+                            .text-lg { font-size: 16px; }
+                            .text-base { font-size: 14px; }
+                            .text-sm { font-size: 12px; }
+                            .text-xs { font-size: 10px; }
                             
-                            .grid {
-                                display: grid;
-                            }
+                            .mb-2 { margin-bottom: 8px; }
+                            .mb-3 { margin-bottom: 12px; }
+                            .mb-4 { margin-bottom: 16px; }
+                            .mb-6 { margin-bottom: 24px; }
+                            .mt-2 { margin-top: 8px; }
+                            .p-3 { padding: 12px; }
+                            .pb-4 { padding-bottom: 16px; }
+                            .pt-4 { padding-top: 16px; }
                             
-                            .grid-cols-2 {
-                                grid-template-columns: repeat(2, 1fr);
-                            }
-                            
-                            .gap-6 {
-                                gap: 1.5rem;
-                            }
-                            
-                            .gap-2 {
-                                gap: 0.5rem;
-                            }
-                            
-                            .space-y-3 > * + * {
-                                margin-top: 0.75rem;
-                            }
-                            
-                            .space-y-4 > * + * {
-                                margin-top: 1rem;
-                            }
-                            
-                            .border-b {
-                                border-bottom: 1px solid #e2e8f0;
-                            }
-                            
-                            .border-t {
-                                border-top: 1px solid #e2e8f0;
-                            }
-                            
-                            .bg-blue-600 {
-                                color: #2563eb;
-                            }
+                            .border-b { border-bottom: 1px solid #000; }
+                            .border-t { border-top: 1px solid #000; }
                             
                             .bg-slate-50 {
-                                background-color: #f8fafc;
+                                background-color: #f8f9fa !important;
+                                border: 1px solid #dee2e6;
+                                padding: 8px;
+                                border-radius: 4px;
                             }
                             
                             .bg-blue-100 {
-                                background-color: #dbeafe;
-                                color: #1e40af;
-                                padding: 0.5rem 0.75rem;
-                                border-radius: 0.5rem;
+                                background-color: #e3f2fd !important;
+                                color: #1565c0 !important;
+                                padding: 4px 8px;
+                                border-radius: 4px;
                                 display: inline-block;
-                                margin: 0.25rem;
-                                font-weight: 500;
+                                margin: 2px;
+                                border: 1px solid #bbdefb;
                             }
                             
-                            .text-slate-600 { color: #475569; }
-                            .text-slate-500 { color: #64748b; }
-                            .text-slate-400 { color: #94a3b8; }
-                            .text-slate-800 { color: #1e293b; }
-                            
-                            .rounded-lg {
-                                border-radius: 0.5rem;
+                            .grid {
+                                display: block;
                             }
                             
-                            .flex {
-                                display: flex;
+                            .grid > div {
+                                margin-bottom: 16px;
                             }
                             
-                            .items-center {
-                                align-items: center;
+                            #qrcode {
+                                text-align: center;
+                                margin: 16px 0;
                             }
                             
-                            .justify-center {
-                                justify-content: center;
-                            }
-                            
-                            .space-x-4 > * + * {
-                                margin-left: 1rem;
-                            }
-                            
-                            .space-y-3 > * + * {
-                                margin-top: 0.75rem;
-                            }
-                            
-                            .w-12 {
-                                width: 3rem;
-                            }
-                            
-                            .h-12 {
-                                height: 3rem;
-                            }
-                            
-                            .bg-gradient-to-br {
-                                background: linear-gradient(to bottom right, #3b82f6, #4f46e5);
-                                border-radius: 0.75rem;
-                                display: inline-flex;
-                                align-items: center;
-                                justify-content: center;
-                                color: white;
-                                font-size: 1.125rem;
-                            }
-                            
-                            .inline-block {
-                                display: inline-block;
+                            #qrcode canvas,
+                            #qrcode div {
+                                border: 1px solid #000;
+                                margin: 0 auto;
                             }
                             
                             .font-mono {
                                 font-family: 'Courier New', monospace;
+                                word-break: break-all;
                             }
-                            
-                            #qrcode canvas {
-                                border: 1px solid #e2e8f0;
-                                border-radius: 8px;
+                        }
+                        
+                        @media screen {
+                            .print-preview {
+                                max-width: 800px;
+                                margin: 20px auto;
+                                padding: 40px;
+                                background: white;
+                                border: 1px solid #ddd;
+                                box-shadow: 0 0 20px rgba(0,0,0,0.1);
                             }
-                            
-                            @media print {
-                                body {
-                                    padding: 0;
-                                }
-                                
-                                .print-area {
-                                    border: none;
-                                    box-shadow: none;
-                                    padding: 20px;
-                                    margin: 0;
-                                    max-width: none;
-                                }
-                            }
-                        </style>
-                    </head>
-                    <body>
-                        <div class="print-area">
-                            ${printContent}
-                        </div>
-                        <script>
-                            window.onload = function() {
-                                setTimeout(function() {
-                                    try {
-                                        window.print();
-                                    } catch (e) {
-                                        console.error('Print error:', e);
-                                    }
-                                    setTimeout(function() {
-                                        window.close();
-                                    }, 1000);
-                                }, 1000);
-                            };
-                            
-                            window.onerror = function(msg, url, line) {
-                                console.error('Print window error:', msg, url, line);
-                                return false;
-                            };
-                        </script>
-                    <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'985fb28283963e24',t:'MTc1OTAyNTM1Mi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
-                    </html>
+                        }
+                    </style>
                 `;
                 
-                // Write content to print window
-                printWindow.document.write(printHTML);
-                printWindow.document.close();
+                // Add print styles to head
+                const existingPrintStyles = document.getElementById('printStyles');
+                if (existingPrintStyles) {
+                    existingPrintStyles.remove();
+                }
                 
-                showAlert('Jendela cetak telah dibuka!', 'success');
+                const styleElement = document.createElement('style');
+                styleElement.id = 'printStyles';
+                styleElement.innerHTML = printStyles;
+                document.head.appendChild(styleElement);
+                
+                // Use browser's native print function
+                setTimeout(() => {
+                    window.print();
+                    showAlert('Dialog cetak telah dibuka!', 'success');
+                }, 100);
                 
             } catch (error) {
                 console.error('Print error:', error);
-                showAlert('Gagal membuka jendela cetak: ' + error.message, 'error');
+                showAlert('Gagal membuka dialog cetak: ' + error.message, 'error');
+                
+                // Fallback: show print instructions
+                showAlert('Gunakan Ctrl+P (Windows) atau Cmd+P (Mac) untuk mencetak halaman ini', 'info');
             }
         }
-        
-
 
         // Close modal when clicking outside
         successModal.addEventListener('click', function(e) {
@@ -1195,14 +1780,11 @@
             }
         });
         
-
-        
-        // Close detail modal when clicking outside
         document.getElementById('detailModal').addEventListener('click', function(e) {
             if (e.target === document.getElementById('detailModal')) {
                 closeDetailModal();
             }
         });
     </script>
-</body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'985fd16f942944b1',t:'MTc1OTAyNjYxOS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
