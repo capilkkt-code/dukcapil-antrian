@@ -1,0 +1,929 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Antrian Online - Layanan Kependudukan</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode/1.5.3/qrcode.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        body {
+            box-sizing: border-box;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        .animate-fadeInUp {
+            animation: fadeInUp 0.6s ease-out;
+        }
+        
+        .animate-slideIn {
+            animation: slideIn 0.4s ease-out;
+        }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .glass-effect {
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .checkbox-custom {
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #d1d5db;
+            border-radius: 4px;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .checkbox-custom:checked {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-color: #667eea;
+        }
+        
+        .checkbox-custom:checked::after {
+            content: '✓';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .floating-label {
+            transition: all 0.3s ease;
+        }
+        
+        .input-group:focus-within .floating-label {
+            transform: translateY(-24px) scale(0.85);
+            color: #667eea;
+        }
+        
+        .input-group input:not(:placeholder-shown) + .floating-label {
+            transform: translateY(-24px) scale(0.85);
+            color: #667eea;
+        }
+        
+        .queue-card {
+            transition: all 0.3s ease;
+            transform: translateY(0);
+        }
+        
+        .queue-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        
+        .floating-animation {
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .pulse-glow {
+            animation: pulseGlow 2s ease-in-out infinite alternate;
+        }
+        
+        @keyframes pulseGlow {
+            from { box-shadow: 0 0 20px rgba(102, 126, 234, 0.4); }
+            to { box-shadow: 0 0 30px rgba(102, 126, 234, 0.8); }
+        }
+        
+        .shimmer {
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            background-size: 200% 100%;
+            animation: shimmer 2s infinite;
+        }
+        
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+        
+        .print-area {
+            background: white;
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+        
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            .print-area, .print-area * {
+                visibility: visible;
+            }
+            .print-area {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                box-shadow: none;
+                border-radius: 0;
+            }
+        }
+    </style>
+</head>
+<body class="min-h-screen gradient-bg font-sans">
+    <!-- Header -->
+    <header class="glass-effect text-white py-8 mb-12">
+        <div class="container mx-auto px-4">
+            <div class="text-center">
+                <div class="flex items-center justify-center space-x-4 mb-4">
+                    <div class="w-16 h-16 bg-white bg-opacity-20 rounded-full flex items-center justify-center shadow-lg floating-animation pulse-glow">
+                        <i class="fas fa-building text-3xl"></i>
+                    </div>
+                    <div class="text-left">
+                        <h1 class="text-4xl font-bold animate-slideIn">Layanan Antrian Online</h1>
+                        <p class="text-lg opacity-90 animate-slideIn" style="animation-delay: 0.2s;">Dinas Kependudukan dan Pencatatan Sipil</p>
+                        <p class="text-sm opacity-75 animate-slideIn" style="animation-delay: 0.4s;">Kabupaten Kepulauan Tanimbar</p>
+                    </div>
+                </div>
+                <div class="mt-6 p-4 bg-white bg-opacity-10 rounded-2xl backdrop-blur-sm border border-white border-opacity-20 max-w-2xl mx-auto">
+                    <p class="text-sm opacity-90">
+                        <i class="fas fa-clock mr-2"></i>
+                        Jam Pelayanan: Senin - Jumat, 08:00 - 16:00 WITA
+                    </p>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container mx-auto px-4 max-w-4xl">
+        <div class="flex justify-center">
+            <!-- Form Section -->
+            <div class="w-full animate-fadeInUp">
+                <div class="bg-white rounded-3xl shadow-2xl p-10 border border-gray-100">
+                    <div class="text-center mb-10">
+                        <div class="w-20 h-20 bg-gradient-to-br from-blue-500 via-purple-600 to-indigo-700 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg floating-animation pulse-glow">
+                            <i class="fas fa-clipboard-list text-3xl text-white"></i>
+                        </div>
+                        <h2 class="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-3">Formulir Antrian Online</h2>
+                        <p class="text-gray-600 text-lg">Silakan lengkapi data untuk mendaftar antrian layanan kependudukan</p>
+                        <div class="mt-4 p-4 bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl border border-blue-100">
+                            <p class="text-sm text-gray-700">
+                                <i class="fas fa-info-circle text-blue-500 mr-2"></i>
+                                Nomor antrian akan direset setiap hari
+                            </p>
+                        </div>
+                    </div>
+
+                    <form id="queueForm" class="space-y-8">
+                        <!-- Grid untuk input utama -->
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <!-- Tanggal -->
+                            <div class="input-group relative">
+                                <input type="date" id="tanggal" name="tanggal" 
+                                       class="w-full px-5 py-4 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-4 focus:ring-blue-100 focus:outline-none transition-all duration-300 placeholder-transparent bg-gray-50 focus:bg-white shadow-sm"
+                                       placeholder=" " required>
+                                <label for="tanggal" class="floating-label absolute left-5 top-4 text-gray-500 pointer-events-none font-medium">
+                                    <i class="fas fa-calendar-alt mr-2 text-blue-500"></i>Tanggal Kunjungan
+                                </label>
+                            </div>
+
+                            <!-- NIK -->
+                            <div class="input-group relative">
+                                <input type="text" id="nik" name="nik" 
+                                       class="w-full px-5 py-4 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-4 focus:ring-blue-100 focus:outline-none transition-all duration-300 placeholder-transparent bg-gray-50 focus:bg-white shadow-sm"
+                                       placeholder=" " pattern="[0-9]{16}" maxlength="16" required>
+                                <label for="nik" class="floating-label absolute left-5 top-4 text-gray-500 pointer-events-none font-medium">
+                                    <i class="fas fa-id-card mr-2 text-blue-500"></i>NIK (16 digit)
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Nama Lengkap -->
+                        <div class="input-group relative">
+                            <input type="text" id="nama" name="nama" 
+                                   class="w-full px-5 py-4 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-4 focus:ring-blue-100 focus:outline-none transition-all duration-300 placeholder-transparent bg-gray-50 focus:bg-white shadow-sm"
+                                   placeholder=" " required>
+                            <label for="nama" class="floating-label absolute left-5 top-4 text-gray-500 pointer-events-none font-medium">
+                                <i class="fas fa-user mr-2 text-blue-500"></i>Nama Lengkap
+                            </label>
+                        </div>
+
+                        <!-- Grid untuk lokasi -->
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <!-- Kecamatan -->
+                            <div class="relative">
+                                <select id="kecamatan" name="kecamatan" 
+                                        class="w-full px-5 py-4 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-4 focus:ring-blue-100 focus:outline-none transition-all duration-300 appearance-none bg-gray-50 focus:bg-white shadow-sm font-medium"
+                                        required>
+                                    <option value="">Pilih Kecamatan</option>
+                                    <option value="Tanimbar Selatan">Tanimbar Selatan</option>
+                                    <option value="Selaru">Selaru</option>
+                                    <option value="Wertamrian">Wertamrian</option>
+                                    <option value="Wermaktian">Wermaktian</option>
+                                    <option value="Tanimbar Utara">Tanimbar Utara</option>
+                                    <option value="Fordata">Fordata</option>
+                                    <option value="Wuarlabobar">Wuarlabobar</option>
+                                    <option value="Kormomolin">Kormomolin</option>
+                                    <option value="Nirunmas">Nirunmas</option>
+                                    <option value="Molumaru">Molumaru</option>
+                                </select>
+                                <i class="fas fa-map-marker-alt absolute left-5 top-4 text-blue-500"></i>
+                                <i class="fas fa-chevron-down absolute right-5 top-4 text-gray-400"></i>
+                            </div>
+
+                            <!-- Desa -->
+                            <div class="relative">
+                                <select id="desa" name="desa" 
+                                        class="w-full px-5 py-4 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-4 focus:ring-blue-100 focus:outline-none transition-all duration-300 appearance-none bg-gray-50 focus:bg-white shadow-sm font-medium disabled:opacity-60"
+                                        required disabled>
+                                    <option value="">Pilih Desa</option>
+                                </select>
+                                <i class="fas fa-home absolute left-5 top-4 text-blue-500"></i>
+                                <i class="fas fa-chevron-down absolute right-5 top-4 text-gray-400"></i>
+                            </div>
+                        </div>
+
+                        <!-- Jenis Pengurusan -->
+                        <div class="space-y-6">
+                            <div class="text-center">
+                                <h3 class="text-2xl font-bold text-gray-800 flex items-center justify-center mb-2">
+                                    <i class="fas fa-file-alt mr-3 text-blue-500"></i>
+                                    Jenis Pengurusan
+                                </h3>
+                                <p class="text-gray-600">Pilih layanan yang ingin Anda urus (dapat memilih lebih dari satu)</p>
+                            </div>
+                            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                <label class="flex items-center space-x-4 p-4 rounded-xl border-2 border-gray-200 hover:border-blue-300 hover:bg-blue-50 cursor-pointer transition-all duration-300 group">
+                                    <input type="checkbox" name="jenis[]" value="KK" class="checkbox-custom">
+                                    <div class="flex-1">
+                                        <span class="text-gray-800 font-medium group-hover:text-blue-700">Kartu Keluarga</span>
+                                        <div class="text-sm text-gray-500">(KK)</div>
+                                    </div>
+                                </label>
+                                <label class="flex items-center space-x-4 p-4 rounded-xl border-2 border-gray-200 hover:border-blue-300 hover:bg-blue-50 cursor-pointer transition-all duration-300 group">
+                                    <input type="checkbox" name="jenis[]" value="KTP El" class="checkbox-custom">
+                                    <div class="flex-1">
+                                        <span class="text-gray-800 font-medium group-hover:text-blue-700">KTP Elektronik</span>
+                                        <div class="text-sm text-gray-500">(e-KTP)</div>
+                                    </div>
+                                </label>
+                                <label class="flex items-center space-x-4 p-4 rounded-xl border-2 border-gray-200 hover:border-blue-300 hover:bg-blue-50 cursor-pointer transition-all duration-300 group">
+                                    <input type="checkbox" name="jenis[]" value="KIA" class="checkbox-custom">
+                                    <div class="flex-1">
+                                        <span class="text-gray-800 font-medium group-hover:text-blue-700">Kartu Identitas Anak</span>
+                                        <div class="text-sm text-gray-500">(KIA)</div>
+                                    </div>
+                                </label>
+                                <label class="flex items-center space-x-4 p-4 rounded-xl border-2 border-gray-200 hover:border-blue-300 hover:bg-blue-50 cursor-pointer transition-all duration-300 group">
+                                    <input type="checkbox" name="jenis[]" value="SKPWNI" class="checkbox-custom">
+                                    <div class="flex-1">
+                                        <span class="text-gray-800 font-medium group-hover:text-blue-700">SKPWNI</span>
+                                        <div class="text-sm text-gray-500">Surat Keterangan</div>
+                                    </div>
+                                </label>
+                                <label class="flex items-center space-x-4 p-4 rounded-xl border-2 border-gray-200 hover:border-blue-300 hover:bg-blue-50 cursor-pointer transition-all duration-300 group">
+                                    <input type="checkbox" name="jenis[]" value="SKDWNI" class="checkbox-custom">
+                                    <div class="flex-1">
+                                        <span class="text-gray-800 font-medium group-hover:text-blue-700">SKDWNI</span>
+                                        <div class="text-sm text-gray-500">Surat Keterangan</div>
+                                    </div>
+                                </label>
+                                <label class="flex items-center space-x-4 p-4 rounded-xl border-2 border-gray-200 hover:border-blue-300 hover:bg-blue-50 cursor-pointer transition-all duration-300 group">
+                                    <input type="checkbox" name="jenis[]" value="Akta Kelahiran" class="checkbox-custom">
+                                    <div class="flex-1">
+                                        <span class="text-gray-800 font-medium group-hover:text-blue-700">Akta Kelahiran</span>
+                                        <div class="text-sm text-gray-500">Dokumen Kelahiran</div>
+                                    </div>
+                                </label>
+                                <label class="flex items-center space-x-4 p-4 rounded-xl border-2 border-gray-200 hover:border-blue-300 hover:bg-blue-50 cursor-pointer transition-all duration-300 group">
+                                    <input type="checkbox" name="jenis[]" value="Akta Kematian" class="checkbox-custom">
+                                    <div class="flex-1">
+                                        <span class="text-gray-800 font-medium group-hover:text-blue-700">Akta Kematian</span>
+                                        <div class="text-sm text-gray-500">Dokumen Kematian</div>
+                                    </div>
+                                </label>
+                                <label class="flex items-center space-x-4 p-4 rounded-xl border-2 border-gray-200 hover:border-blue-300 hover:bg-blue-50 cursor-pointer transition-all duration-300 group">
+                                    <input type="checkbox" name="jenis[]" value="Akta Perkawinan" class="checkbox-custom">
+                                    <div class="flex-1">
+                                        <span class="text-gray-800 font-medium group-hover:text-blue-700">Akta Perkawinan</span>
+                                        <div class="text-sm text-gray-500">Dokumen Nikah</div>
+                                    </div>
+                                </label>
+                                <label class="flex items-center space-x-4 p-4 rounded-xl border-2 border-gray-200 hover:border-blue-300 hover:bg-blue-50 cursor-pointer transition-all duration-300 group">
+                                    <input type="checkbox" name="jenis[]" value="Lainnya" class="checkbox-custom">
+                                    <div class="flex-1">
+                                        <span class="text-gray-800 font-medium group-hover:text-blue-700">Lainnya</span>
+                                        <div class="text-sm text-gray-500">Layanan Lain</div>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="pt-4">
+                            <button type="submit" 
+                                    class="w-full bg-gradient-to-r from-blue-500 via-purple-600 to-indigo-700 text-white py-5 rounded-2xl font-bold text-xl hover:from-blue-600 hover:via-purple-700 hover:to-indigo-800 transform hover:scale-105 hover:shadow-2xl transition-all duration-300 shadow-xl relative overflow-hidden group pulse-glow">
+                                <div class="absolute inset-0 shimmer opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                                <div class="relative flex items-center justify-center">
+                                    <i class="fas fa-paper-plane mr-3 text-2xl group-hover:animate-bounce"></i>
+                                    <span>Kirim Formulir Antrian</span>
+                                </div>
+                            </button>
+                            <p class="text-center text-sm text-gray-500 mt-4">
+                                <i class="fas fa-shield-alt mr-1"></i>
+                                Data Anda akan tersimpan dengan aman
+                            </p>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Detail Modal -->
+    <div id="detailModal" class="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 hidden backdrop-blur-sm">
+        <div class="bg-white rounded-3xl p-8 max-w-2xl mx-4 animate-fadeInUp shadow-2xl border border-gray-100 max-h-[90vh] overflow-y-auto">
+            <div class="print-area" id="printArea">
+                <!-- Header -->
+                <div class="text-center mb-8 border-b border-gray-200 pb-6">
+                    <div class="flex items-center justify-center space-x-4 mb-4">
+                        <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
+                            <i class="fas fa-building text-2xl text-white"></i>
+                        </div>
+                        <div class="text-left">
+                            <h2 class="text-2xl font-bold text-gray-800">Dinas Kependudukan dan Pencatatan Sipil</h2>
+                            <p class="text-sm text-gray-600">Kabupaten Kepulauan Tanimbar</p>
+                        </div>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800">BUKTI ANTRIAN ONLINE</h3>
+                </div>
+
+                <!-- Queue Info -->
+                <div class="grid md:grid-cols-2 gap-8 mb-8">
+                    <div class="space-y-4">
+                        <div class="text-center">
+                            <div class="text-6xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-2" id="detailQueueNumber">001</div>
+                            <p class="text-lg font-semibold text-gray-700">Nomor Antrian</p>
+                            <p class="text-sm text-gray-500" id="detailDate">-</p>
+                        </div>
+                        
+                        <!-- QR Code -->
+                        <div class="text-center">
+                            <div id="qrcode" class="inline-block p-4 bg-white border-2 border-gray-200 rounded-lg"></div>
+                            <p class="text-xs text-gray-500 mt-2">Scan QR Code untuk verifikasi</p>
+                        </div>
+                    </div>
+
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-600 mb-1">Nama Lengkap</label>
+                            <p class="text-lg text-gray-800" id="detailNama">-</p>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-600 mb-1">NIK</label>
+                            <p class="text-lg text-gray-800" id="detailNIK">-</p>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-600 mb-1">Alamat</label>
+                            <p class="text-lg text-gray-800" id="detailAlamat">-</p>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-600 mb-1">Tanggal Kunjungan</label>
+                            <p class="text-lg text-gray-800" id="detailTanggal">-</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Services -->
+                <div class="mb-8">
+                    <h4 class="text-lg font-semibold text-gray-800 mb-4">Jenis Pengurusan:</h4>
+                    <div id="detailJenis" class="grid grid-cols-2 gap-2">
+                        <!-- Services will be populated here -->
+                    </div>
+                </div>
+
+                <!-- ID Antrian -->
+                <div class="bg-gray-50 rounded-lg p-4 mb-6">
+                    <div class="text-center">
+                        <p class="text-sm font-semibold text-gray-600 mb-1">ID Antrian Unik</p>
+                        <p class="text-lg font-mono text-gray-800" id="detailUniqueId">-</p>
+                    </div>
+                </div>
+
+                <!-- Footer -->
+                <div class="border-t border-gray-200 pt-6 text-center">
+                    <p class="text-sm text-gray-600 mb-2">
+                        <i class="fas fa-clock mr-1"></i>
+                        Jam Pelayanan: Senin - Jumat, 08:00 - 16:00 WITA
+                    </p>
+                    <p class="text-xs text-gray-500">
+                        Harap datang sesuai tanggal yang dipilih dan bawa dokumen yang diperlukan
+                    </p>
+                    <p class="text-xs text-gray-400 mt-2">
+                        Dicetak pada: <span id="printTime">-</span>
+                    </p>
+                </div>
+            </div>
+
+            <!-- Action Buttons (not printed) -->
+            <div class="flex space-x-4 mt-6 print:hidden">
+                <button onclick="printTicket()" 
+                        class="flex-1 bg-gradient-to-r from-green-500 to-blue-600 text-white py-3 rounded-xl font-semibold hover:from-green-600 hover:to-blue-700 transition-all duration-300">
+                    <i class="fas fa-print mr-2"></i>
+                    Cetak
+                </button>
+                <button onclick="downloadPDF()" 
+                        class="flex-1 bg-gradient-to-r from-red-500 to-pink-600 text-white py-3 rounded-xl font-semibold hover:from-red-600 hover:to-pink-700 transition-all duration-300">
+                    <i class="fas fa-file-pdf mr-2"></i>
+                    Download PDF
+                </button>
+                <button onclick="closeDetailModal()" 
+                        class="flex-1 bg-gradient-to-r from-gray-500 to-gray-600 text-white py-3 rounded-xl font-semibold hover:from-gray-600 hover:to-gray-700 transition-all duration-300">
+                    <i class="fas fa-times mr-2"></i>
+                    Tutup
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div id="successModal" class="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 hidden backdrop-blur-sm">
+        <div class="bg-white rounded-3xl p-10 max-w-lg mx-4 animate-fadeInUp shadow-2xl border border-gray-100">
+            <div class="text-center">
+                <div class="w-24 h-24 bg-gradient-to-br from-green-400 to-blue-500 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg floating-animation pulse-glow">
+                    <i class="fas fa-check text-4xl text-white"></i>
+                </div>
+                <h3 class="text-3xl font-bold bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent mb-3">Formulir Berhasil Dikirim!</h3>
+                <p class="text-gray-600 mb-6 text-lg">Nomor antrian Anda hari ini adalah:</p>
+                <div class="bg-gradient-to-r from-blue-50 to-purple-50 rounded-2xl p-6 mb-6 border border-blue-100 hover:shadow-xl hover:border-blue-300 transition-all duration-300 cursor-pointer" onclick="showQueueDetail()">
+                    <div class="text-5xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-2 hover:scale-110 transition-transform duration-300 select-none" id="queueNumber">A001</div>
+                    <p class="text-sm text-gray-500 animate-pulse">
+                        <i class="fas fa-mouse-pointer mr-1"></i>
+                        Klik nomor untuk melihat detail & cetak
+                    </p>
+                </div>
+                <div class="bg-yellow-50 border border-yellow-200 rounded-xl p-4 mb-6">
+                    <p class="text-sm text-yellow-800">
+                        <i class="fas fa-info-circle mr-2"></i>
+                        Harap datang sesuai tanggal yang dipilih. Nomor antrian akan direset setiap hari.
+                    </p>
+                </div>
+                <button id="closeModal" 
+                        class="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-10 py-4 rounded-2xl font-bold text-lg hover:from-blue-600 hover:to-purple-700 transform hover:scale-105 transition-all duration-300 shadow-lg">
+                    <i class="fas fa-times mr-2"></i>
+                    Tutup
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Data desa berdasarkan kecamatan
+        const desaData = {
+            "Tanimbar Selatan": ["Saumlaki", "Saumlaki Utara", "Wowonda", "Ilngei", "Kabiarat", "Lauran", "Sifnana", "Olilit Raya", "Lermatang", "Latdalam", "Bomaki", "Matakus"],
+            "Selaru": ["Adaut", "Namtabung", "Kandar", "Lingat", "Fursuy", "Werain", "Eliasa"],
+            "Wertamrian": ["Tumbur", "Lorulun", "Atubul Dol", "Amdasa", "Sangliat Krawain", "Arui Bab", "Arui Das", "Sangliat Dol", "Atubul Da"],
+            "Wermaktian": ["Kamatubun", "Rumah Salut", "Welutu", "Themin", "Weratan", "Wermatan", "Otemer", "Makatian", "Marantutul"],
+            "Tanimbar Utara": ["Lelingluan", "Ritabel", "Ridool", "Watidal", "Keliobar", "Kelaan", "Lamdesar Barat", "Lamdesar Timur"],
+            "Fordata": ["Romean", "Rumngeur", "Awear", "Sofyanin", "Walerang", "Adodo Fordata"],
+            "Wuarlabobar": ["Abat", "Labobar", "Watmasa", "Awear Rumngeur", "Karatat", "Wunlah", "Kiloon", "Lingada", "Teineman", "Wabar", "Romnus"],
+            "Kormomolin": ["Lumasebu", "Kilmasa", "Meyano Bab", "Alusi Krawain", "Alusi Kelaan", "Alusi Bukjalim", "Alusi Tamrian", "Alusi Batjas", "Lorwembun", "Meyano Das"],
+            "Nirunmas": ["Arma", "Watmuri", "Manglusi", "Tutukembong", "Waturu"],
+            "Molumaru": ["Wedangkou", "Adodo Molu", "Wulmasa", "Tutunametal", "Nurkat"]
+        };
+
+        // Global variable to store current queue data
+        let currentQueueData = null;
+
+        // Queue management - Daily reset system
+        function getTodayKey() {
+            return new Date().toISOString().split('T')[0]; // Format: YYYY-MM-DD
+        }
+        
+        function getDailyQueueCounter() {
+            const today = getTodayKey();
+            const savedDate = localStorage.getItem('queueDate');
+            let counter = parseInt(localStorage.getItem('dailyQueueCounter')) || 1;
+            
+            // Reset counter if it's a new day
+            if (savedDate !== today) {
+                counter = 1;
+                localStorage.setItem('queueDate', today);
+                localStorage.setItem('dailyQueueCounter', '1');
+            }
+            
+            return counter;
+        }
+        
+        function incrementDailyCounter() {
+            let counter = getDailyQueueCounter();
+            counter++;
+            localStorage.setItem('dailyQueueCounter', counter.toString());
+            return counter - 1; // Return the number that was just used
+        }
+        
+        // Generate unique ID for queue
+        function generateUniqueId() {
+            const today = getTodayKey().replace(/-/g, '');
+            const timestamp = Date.now().toString().slice(-6);
+            const random = Math.random().toString(36).substr(2, 4).toUpperCase();
+            return `TNB${today}${timestamp}${random}`;
+        }
+
+        // DOM elements
+        const kecamatanSelect = document.getElementById('kecamatan');
+        const desaSelect = document.getElementById('desa');
+        const queueForm = document.getElementById('queueForm');
+        const successModal = document.getElementById('successModal');
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            updateDesaOptions();
+            
+            // Set minimum date to today and maximum to 30 days ahead
+            const today = new Date();
+            const todayStr = today.toISOString().split('T')[0];
+            const maxDate = new Date(today.getTime() + (30 * 24 * 60 * 60 * 1000));
+            const maxDateStr = maxDate.toISOString().split('T')[0];
+            
+            const tanggalInput = document.getElementById('tanggal');
+            tanggalInput.setAttribute('min', todayStr);
+            tanggalInput.setAttribute('max', maxDateStr);
+            tanggalInput.value = todayStr; // Set default to today
+        });
+
+        // Handle kecamatan change
+        kecamatanSelect.addEventListener('change', function() {
+            updateDesaOptions();
+        });
+
+        function updateDesaOptions() {
+            const selectedKecamatan = kecamatanSelect.value;
+            const desaOptions = desaData[selectedKecamatan] || [];
+            
+            desaSelect.innerHTML = '<option value="">Pilih Desa</option>';
+            desaSelect.disabled = !selectedKecamatan;
+            
+            desaOptions.forEach(desa => {
+                const option = document.createElement('option');
+                option.value = desa;
+                option.textContent = desa;
+                desaSelect.appendChild(option);
+            });
+        }
+
+        // Google Apps Script URL - Sudah terhubung ke database
+        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxArSslEnmrlQ9N2LFxuXglohlbwi7pmiBKwdSrzIt-k7Q77Ly8WZujGvbZv4nXaQIA/exec';
+
+        // Handle form submission
+        queueForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(queueForm);
+            const jenisArray = formData.getAll('jenis[]');
+            const selectedDate = new Date(formData.get('tanggal'));
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            
+            if (jenisArray.length === 0) {
+                alert('Silakan pilih minimal satu jenis pengurusan!');
+                return;
+            }
+            
+            if (selectedDate < today) {
+                alert('Tanggal kunjungan tidak boleh kurang dari hari ini!');
+                return;
+            }
+            
+            // Show loading state
+            const submitButton = document.querySelector('button[type="submit"]');
+            const originalText = submitButton.innerHTML;
+            submitButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-3"></i>Mengirim Data...';
+            submitButton.disabled = true;
+            
+            // Get daily queue number
+            const queueNumber = incrementDailyCounter();
+            const uniqueId = generateUniqueId();
+            
+            const queueItem = {
+                id: Date.now(),
+                uniqueId: uniqueId,
+                tanggal: formData.get('tanggal'),
+                nik: formData.get('nik'),
+                nama: formData.get('nama'),
+                kecamatan: formData.get('kecamatan'),
+                desa: formData.get('desa'),
+                jenis: jenisArray,
+                nomor: String(queueNumber).padStart(3, '0'),
+                timestamp: new Date().toISOString()
+            };
+            
+            // Send data to Google Sheets
+            sendToGoogleSheets(queueItem)
+                .then(response => {
+                    console.log('Data berhasil dikirim:', response);
+                    
+                    // Store current queue data for detail view
+                    currentQueueData = queueItem;
+                    
+                    // Show success modal
+                    document.getElementById('queueNumber').textContent = queueItem.nomor;
+                    successModal.classList.remove('hidden');
+                    
+                    // Reset form
+                    queueForm.reset();
+                    updateDesaOptions();
+                    
+                    // Reset to today's date
+                    const todayReset = new Date().toISOString().split('T')[0];
+                    document.getElementById('tanggal').value = todayReset;
+                })
+                .catch(error => {
+                    console.error('Error mengirim data:', error);
+                    alert('Terjadi kesalahan saat mengirim data. Silakan coba lagi.');
+                })
+                .finally(() => {
+                    // Reset button state
+                    submitButton.innerHTML = originalText;
+                    submitButton.disabled = false;
+                });
+        });
+
+        // Function to send data to Google Sheets
+        async function sendToGoogleSheets(data) {
+            try {
+                const response = await fetch(GOOGLE_SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors', // Important for Google Apps Script
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                });
+                
+                // Note: no-cors mode doesn't allow reading response
+                // We assume success if no error is thrown
+                return { status: 'success', message: 'Data terkirim ke Google Sheets' };
+                
+            } catch (error) {
+                throw new Error('Gagal mengirim data ke Google Sheets: ' + error.message);
+            }
+        }
+
+        // Close modal
+        document.getElementById('closeModal').addEventListener('click', function() {
+            successModal.classList.add('hidden');
+        });
+
+
+
+        // NIK validation
+        document.getElementById('nik').addEventListener('input', function(e) {
+            e.target.value = e.target.value.replace(/\D/g, '');
+        });
+
+        // Show queue detail
+        function showQueueDetail() {
+            if (!currentQueueData) {
+                alert('Data antrian tidak tersedia!');
+                return;
+            }
+            
+            console.log('Showing queue detail for:', currentQueueData);
+            
+            // Populate detail modal
+            document.getElementById('detailQueueNumber').textContent = currentQueueData.nomor;
+            document.getElementById('detailDate').textContent = new Date().toLocaleDateString('id-ID');
+            document.getElementById('detailNama').textContent = currentQueueData.nama;
+            document.getElementById('detailNIK').textContent = currentQueueData.nik;
+            document.getElementById('detailAlamat').textContent = `${currentQueueData.desa}, ${currentQueueData.kecamatan}`;
+            document.getElementById('detailTanggal').textContent = new Date(currentQueueData.tanggal).toLocaleDateString('id-ID');
+            document.getElementById('detailUniqueId').textContent = currentQueueData.uniqueId;
+            document.getElementById('printTime').textContent = new Date().toLocaleString('id-ID');
+            
+            // Populate services
+            const jenisContainer = document.getElementById('detailJenis');
+            jenisContainer.innerHTML = currentQueueData.jenis.map(jenis => 
+                `<div class="bg-blue-100 text-blue-800 px-3 py-2 rounded-lg text-sm font-medium">${jenis}</div>`
+            ).join('');
+            
+            // Generate QR Code
+            const qrContainer = document.getElementById('qrcode');
+            qrContainer.innerHTML = ''; // Clear previous QR code
+            
+            const qrData = JSON.stringify({
+                id: currentQueueData.uniqueId,
+                nomor: currentQueueData.nomor,
+                nama: currentQueueData.nama,
+                tanggal: currentQueueData.tanggal,
+                timestamp: currentQueueData.timestamp
+            });
+            
+            // Create canvas element for QR code
+            const canvas = document.createElement('canvas');
+            qrContainer.appendChild(canvas);
+            
+            QRCode.toCanvas(canvas, qrData, {
+                width: 150,
+                height: 150,
+                margin: 2,
+                color: {
+                    dark: '#1f2937',
+                    light: '#ffffff'
+                }
+            }, function (error) {
+                if (error) {
+                    console.error('QR Code error:', error);
+                    qrContainer.innerHTML = '<div class="text-red-500 text-sm">QR Code gagal dibuat</div>';
+                } else {
+                    console.log('QR Code berhasil dibuat');
+                }
+            });
+            
+            // Show modal
+            document.getElementById('successModal').classList.add('hidden');
+            document.getElementById('detailModal').classList.remove('hidden');
+        }
+        
+        // Close detail modal
+        function closeDetailModal() {
+            document.getElementById('detailModal').classList.add('hidden');
+        }
+        
+        // Print ticket
+        function printTicket() {
+            // Focus on the print area before printing
+            const printArea = document.getElementById('printArea');
+            if (printArea) {
+                // Add print-specific styles
+                const originalDisplay = document.body.style.display;
+                
+                // Create print-specific CSS
+                const printStyles = `
+                    <style>
+                        @media print {
+                            body * {
+                                visibility: hidden;
+                            }
+                            .print-area, .print-area * {
+                                visibility: visible;
+                            }
+                            .print-area {
+                                position: absolute;
+                                left: 0;
+                                top: 0;
+                                width: 100%;
+                                background: white !important;
+                                box-shadow: none !important;
+                                border-radius: 0 !important;
+                                margin: 0 !important;
+                                padding: 20px !important;
+                            }
+                            .print:hidden {
+                                display: none !important;
+                            }
+                        }
+                    </style>
+                `;
+                
+                // Add styles to head temporarily
+                const styleElement = document.createElement('style');
+                styleElement.innerHTML = printStyles;
+                document.head.appendChild(styleElement);
+                
+                // Print
+                window.print();
+                
+                // Remove temporary styles after printing
+                setTimeout(() => {
+                    document.head.removeChild(styleElement);
+                }, 1000);
+            } else {
+                console.error('Print area not found');
+                alert('Area cetak tidak ditemukan!');
+            }
+        }
+        
+        // Download PDF
+        function downloadPDF() {
+            if (!currentQueueData) {
+                alert('Data antrian tidak tersedia!');
+                return;
+            }
+            
+            const { jsPDF } = window.jspdf;
+            const printArea = document.getElementById('printArea');
+            
+            if (!printArea) {
+                alert('Area cetak tidak ditemukan!');
+                return;
+            }
+            
+            // Show loading indicator
+            const loadingDiv = document.createElement('div');
+            loadingDiv.innerHTML = `
+                <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                    <div class="bg-white rounded-lg p-6 flex items-center space-x-3">
+                        <i class="fas fa-spinner fa-spin text-blue-500 text-xl"></i>
+                        <span class="text-gray-700">Membuat PDF...</span>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(loadingDiv);
+            
+            html2canvas(printArea, {
+                scale: 2,
+                useCORS: true,
+                allowTaint: true,
+                backgroundColor: '#ffffff',
+                logging: false,
+                width: printArea.scrollWidth,
+                height: printArea.scrollHeight
+            }).then(canvas => {
+                try {
+                    const imgData = canvas.toDataURL('image/png');
+                    const pdf = new jsPDF('p', 'mm', 'a4');
+                    
+                    const imgWidth = 210;
+                    const pageHeight = 295;
+                    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+                    let heightLeft = imgHeight;
+                    
+                    let position = 0;
+                    
+                    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+                    heightLeft -= pageHeight;
+                    
+                    while (heightLeft >= 0) {
+                        position = heightLeft - imgHeight;
+                        pdf.addPage();
+                        pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+                        heightLeft -= pageHeight;
+                    }
+                    
+                    // Generate filename with safe characters
+                    const safeNama = currentQueueData.nama.replace(/[^a-zA-Z0-9]/g, '_');
+                    const filename = `Antrian_${currentQueueData.nomor}_${safeNama}.pdf`;
+                    
+                    pdf.save(filename);
+                    
+                    // Remove loading indicator
+                    document.body.removeChild(loadingDiv);
+                    
+                } catch (error) {
+                    console.error('Error creating PDF:', error);
+                    alert('Gagal membuat PDF. Silakan coba lagi.');
+                    document.body.removeChild(loadingDiv);
+                }
+            }).catch(error => {
+                console.error('Error capturing canvas:', error);
+                alert('Gagal mengambil gambar untuk PDF. Silakan coba lagi.');
+                document.body.removeChild(loadingDiv);
+            });
+        }
+
+        // Close modal when clicking outside
+        successModal.addEventListener('click', function(e) {
+            if (e.target === successModal) {
+                successModal.classList.add('hidden');
+            }
+        });
+        
+        // Close detail modal when clicking outside
+        document.getElementById('detailModal').addEventListener('click', function(e) {
+            if (e.target === document.getElementById('detailModal')) {
+                closeDetailModal();
+            }
+        });
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'985f6df7c31fce8a',t:'MTc1OTAyMjU0NC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
